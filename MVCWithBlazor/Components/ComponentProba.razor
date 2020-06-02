@@ -1,0 +1,31 @@
+﻿<h3>ComponentProba</h3>
+
+Hello @Name
+
+<button @onclick="Toggle">Toggle button</button>
+<p>
+    I was rendered at @DateTime.Now.ToString("hh:mm:ss:ms");
+    Time from OnInitialized function: @TimeRendered
+</p>
+
+@code {
+    public string Name { get; set; } = "Jon";
+
+    public string TimeRendered;
+    protected override void OnInitialized()
+    {
+        TimeRendered = DateTime.Now.ToString("hh:mm:ss:ms");
+    }
+
+    public void Toggle()
+    {
+        if (Name == "Jon")
+        {
+            Name = "Susan";
+        }
+        else
+        {
+            Name = "Jon";
+        }
+    }
+}

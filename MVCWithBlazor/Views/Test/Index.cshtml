@@ -1,0 +1,23 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+<h3>Populate Plc Database</h3>
+<a asp-area="" asp-controller="Test" asp-action="PopulatePlcDb">Populate plc DbContext</a>
+<h3>Populate Tag Database</h3>
+<a asp-area="" asp-controller="Test" asp-action="PopulateTagDb">Populate tag DbContext</a>
+
+
+@* Scripturi *@
+@section scripts {
+    @*<script src="~/js/site.js"></script>*@
+    @*Refresh Page automaticaly at a certain period *@
+    <script type="text/javascript">
+        function autoRefreshPage() {
+            window.location = window.location.href;
+            console.log("Refresh page");
+        }
+        setInterval('autoRefreshPage()', 6000); // Resetare la 6 secunde</script>
+}

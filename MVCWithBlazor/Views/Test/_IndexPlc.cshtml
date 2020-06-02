@@ -1,0 +1,51 @@
+﻿@model IEnumerable<MVCWithBlazor.Models.PlcModel>
+
+<table class="table" id="tagTable">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DataCreation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsEnable)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Ip)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Rack)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Slot)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataCreation)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsEnable)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Ip)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Rack)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Slot)
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

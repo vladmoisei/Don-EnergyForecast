@@ -1,0 +1,22 @@
+Exemple:  
+- signalR?
+x JQuery UI - select date between ...
+x ajax call cu parametrii ( de exemplu sa stergi rangeuri din db context deja create) =>
+   => call a function from server and return a partial view and replace table data
+x extract data to excel file (trebuie sa adaugi si Route atribute ca sa raspunda la href din ancor
+  la Asp.Net Core 3.1)
+x incarca din fisier excel (asp.net Core 3.1 WorkBook are index 0 in loc de 1)
+x datatable cu butoane
+x pus in index script javascript in scripts section
+x javascript refresh page interval
+x scris logging (in controller Test)
+x validation date
+x client side validation
+x MVC RedirecToAction cu parametrii si fara (transfer compex data cu json.serialize and
+retrive it with json.deserialize)
+x Form cu atntiforgeytoken (daca pui tag form in html genereaza automat antiforgerytoken): =>
+  => sterge In SQL range element
+
+Make README:
+- cu lista de mai sus si directionare unde se gasesc exemplele
+- plus NuGet Packages instalate, plus datatable fisiere (link site)

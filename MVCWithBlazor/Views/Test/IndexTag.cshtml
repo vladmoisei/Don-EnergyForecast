@@ -1,0 +1,85 @@
+﻿@model IEnumerable<MVCWithBlazor.Models.TagModel>
+
+@{
+    ViewData["Title"] = "IndexTag";
+}
+
+<h1>IndexTag</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<div class="row">
+    <form method="post" enctype="multipart/form-data" asp-controller="Test" asp-action="StergereElementeById">
+        <div class="form-group">
+            <div class="col-md-10">
+                <p>Sterge cu Id-ul mai mare decat cel introdus:</p>
+                <input id="numberId" name="numberId" type="number" />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-10">
+                <input id="butonStergereElemById" type="submit" value="Sterge" />
+            </div>
+        </div>
+    </form>
+</div>
+
+<table class="table" id="tagTable">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Value)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Adress)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PlcModel)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Value)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Adress)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PlcModel.Name)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.TagID">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.TagID">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.TagID">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@* Scripturi *@
+@section scripts {
+    @*<script src="~/js/site.js"></script>*@
+    @*Add DataTable to Html table *@
+    <script type="text/javascript">$(document).ready(function () {
+            $('#tagTable').DataTable({
+                dom: 'B<"clear">lfrtip',
+                buttons: {
+                    name: 'primary',
+                    buttons: ['copy', 'csv', 'excel']
+                }
+            });
+        });</script>
+}

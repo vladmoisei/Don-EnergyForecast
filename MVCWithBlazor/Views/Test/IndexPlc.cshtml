@@ -1,0 +1,106 @@
+﻿@model IEnumerable<MVCWithBlazor.Models.PlcModel>
+
+@{
+    ViewData["Title"] = "IndexPlc";
+}
+<h4>Nume primit din redirectToAction: @ViewData["Nume primit"]</h4>
+<h4>Numar primit din redirectToAction: @ViewData["Numar primit"]</h4>
+
+<h3>Incarca fisier</h3>
+<h2>ImportFile</h2>
+<div class="alert alert-danger col-lg-4 @ViewBag.Hidden">@ViewBag.Mesaj</div>
+<div class="row">
+    <form method="post" enctype="multipart/form-data" asp-controller="Test" asp-action="ImportFile">
+        <div class="form-group">
+            <div class="col-md-10">
+                <p>Incarca fisierul cu lista de Plcuri:</p>
+                <input type="file" name="files" multiple />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-10">
+                <input type="submit" value="Upload" />
+            </div>
+        </div>
+    </form>
+</div>
+
+<h1>IndexPlc</h1>
+
+<h3>Select period date</h3>
+<div>
+    <p>Selectare perioada raportare in excel</p>
+    <label for="from">From</label>
+    <input type="text" id="from" name="from">
+    <label for="to">to</label>
+    <input type="text" id="to" name="to">
+    <p>
+        <a id="downloadToExcel" asp-action="ExportToExcelAsync">Exporta in excel</a>
+    </p>
+</div>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table" id="tagTable">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DataCreation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsEnable)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Ip)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Rack)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Slot)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DataCreation)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsEnable)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Ip)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Rack)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Slot)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.PlcModelID">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.PlcModelID">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.PlcModelID">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@*Section for UI Datepicker from Jquery*@
+@section JQueryUI {
+    @*<script src="https://code.jquery.com/jquery-1.12.4.js"></script>*@
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="~/js/datePickerJquery.js"></script>
+}
