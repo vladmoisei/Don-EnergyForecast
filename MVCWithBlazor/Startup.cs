@@ -76,6 +76,7 @@ namespace MVCWithBlazor
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("MjY3Mzg2QDMxMzgyZTMxMmUzMFZpbGFaRlptWjVMa25ONnpsOHozZFkvZmVXbXh4OGViL2xoT2l0RDRxTE09;MjY3Mzg3QDMxMzgyZTMxMmUzMFdUcVYwSkRFcTM2R1pEMGJNWVB0V0dSYjRJMTBuSCtxTElnL1BzL3BCR1U9");
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
