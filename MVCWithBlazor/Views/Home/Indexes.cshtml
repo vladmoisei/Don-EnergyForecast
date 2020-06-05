@@ -1,0 +1,83 @@
+﻿@model IEnumerable<MVCWithBlazor.Models.IndexModel>
+
+@{
+    ViewData["Title"] = "Indexes";
+}
+
+<h1>Indexes</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.IndexModelID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DataOra)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EdisStatus)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IndexEnergyPlusA)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IndexEnergyMinusA)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IndexEnergyPlusRi)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IndexEnergyPlusRc)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IndexEnergyMinusRi)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IndexEnergyMinusRc)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.IndexModelID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataOra)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EdisStatus)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IndexEnergyPlusA)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IndexEnergyMinusA)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IndexEnergyPlusRi)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IndexEnergyPlusRc)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IndexEnergyMinusRi)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IndexEnergyMinusRc)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
