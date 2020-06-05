@@ -16,5 +16,7 @@ namespace MVCWithBlazor.Data
 
         public DbSet<PlcModel> Plcs { get; set; }
         public DbSet<TagModel> Tags { get; set; }
+        // Add Index Model To EE for Databse
+        public DbSet<IndexModel> Indexes { get; set; }
     }
 }

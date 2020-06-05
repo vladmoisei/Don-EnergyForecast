@@ -13,16 +13,16 @@ namespace MVCWithBlazor.Models
 
         public int EdisStatus { get; set; }
 
-        public float EnergyPlusA { get; set; }
+        public double IndexEnergyPlusA { get; set; }
 
-        public float EnergyMinusA { get; set; }
+        public double IndexEnergyMinusA { get; set; }
 
-        public float EnergyPlusRi { get; set; }
+        public double IndexEnergyPlusRi { get; set; }
 
-        public float EnergyPlusRc { get; set; }
+        public double IndexEnergyPlusRc { get; set; }
 
-        public float EnergyMinusRi { get; set; }
+        public double IndexEnergyMinusRi { get; set; }
 
-        public float EnergyMinusRc { get; set; }
+        public double IndexEnergyMinusRc { get; set; }
     }
 }
