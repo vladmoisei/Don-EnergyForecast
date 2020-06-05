@@ -31,18 +31,23 @@ namespace MVCWithBlazor.Services
 
                     for (int row = 3; row <= rowCount; row++)
                     {
-                        list.Add(new IndexModel
+                        DateTime dateTime = ReturnareDataFromExcel(worksheet.Cells[row, 1].Value.ToString().Trim());
+                        if (list.LastOrDefault() != null && list.LastOrDefault().DataOra == dateTime)
+                            continue;
+                        if (IsFixHour(dateTime))
                         {
-                            DataOra = ReturnareDataFromExcel(worksheet.Cells[row, 1].Value.ToString().Trim()),
-                            EdisStatus = Convert.ToInt32(worksheet.Cells[row, 2].Value.ToString().Trim()),
-                            IndexEnergyPlusA = Convert.ToDouble(worksheet.Cells[row, 3].Value.ToString().Trim()),
-                            IndexEnergyMinusA = Convert.ToDouble(worksheet.Cells[row, 4].Value.ToString().Trim()),
-                            IndexEnergyPlusRi = Convert.ToDouble(worksheet.Cells[row, 5].Value.ToString().Trim()),
-                            IndexEnergyPlusRc = Convert.ToDouble(worksheet.Cells[row, 6].Value.ToString().Trim()),
-                            IndexEnergyMinusRi = Convert.ToDouble(worksheet.Cells[row, 7].Value.ToString().Trim()),
-                            IndexEnergyMinusRc = Convert.ToDouble(worksheet.Cells[row, 8].Value.ToString().Trim()),
-                        });
-
+                            list.Add(new IndexModel
+                            {
+                                DataOra = ReturnareDataFromExcel(worksheet.Cells[row, 1].Value.ToString().Trim()),
+                                EdisStatus = Convert.ToInt32(worksheet.Cells[row, 2].Value.ToString().Trim()),
+                                IndexEnergyPlusA = Convert.ToDouble(worksheet.Cells[row, 3].Value.ToString().Trim()),
+                                IndexEnergyMinusA = Convert.ToDouble(worksheet.Cells[row, 4].Value.ToString().Trim()),
+                                IndexEnergyPlusRi = Convert.ToDouble(worksheet.Cells[row, 5].Value.ToString().Trim()),
+                                IndexEnergyPlusRc = Convert.ToDouble(worksheet.Cells[row, 6].Value.ToString().Trim()),
+                                IndexEnergyMinusRi = Convert.ToDouble(worksheet.Cells[row, 7].Value.ToString().Trim()),
+                                IndexEnergyMinusRc = Convert.ToDouble(worksheet.Cells[row, 8].Value.ToString().Trim()),
+                            });
+                        }
                     }
                 }
             }
@@ -57,6 +62,20 @@ namespace MVCWithBlazor.Services
             double dateValue = Convert.ToDouble(dateToParse);  // not "Text"
             DateTime dateTime = DateTime.FromOADate(dateValue);
             return dateTime;
+        }
+
+        // Check if it is Fix Hour
+        public bool IsFixHour(DateTime dateTime)
+        {
+            string timp = dateTime.TimeOfDay.ToString().Substring(3,2);
+            if (timp == "00") return true;
+            return false;
+        }
+        // Check if is hour 00:00 
+        public bool IsTimeOfDayZeroZero(DateTime dateTime)
+        {
+            if (dateTime.TimeOfDay == new TimeSpan(0)) return true;
+            return false;
         }
     }
 }

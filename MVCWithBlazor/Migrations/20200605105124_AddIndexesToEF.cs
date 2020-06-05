@@ -15,12 +15,12 @@ namespace MVCWithBlazor.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DataOra = table.Column<DateTime>(nullable: false),
                     EdisStatus = table.Column<int>(nullable: false),
-                    IndexEnergyPlusA = table.Column<float>(nullable: false),
-                    IndexEnergyMinusA = table.Column<float>(nullable: false),
-                    IndexEnergyPlusRi = table.Column<float>(nullable: false),
-                    IndexEnergyPlusRc = table.Column<float>(nullable: false),
-                    IndexEnergyMinusRi = table.Column<float>(nullable: false),
-                    IndexEnergyMinusRc = table.Column<float>(nullable: false)
+                    IndexEnergyPlusA = table.Column<double>(nullable: false),
+                    IndexEnergyMinusA = table.Column<double>(nullable: false),
+                    IndexEnergyPlusRi = table.Column<double>(nullable: false),
+                    IndexEnergyPlusRc = table.Column<double>(nullable: false),
+                    IndexEnergyMinusRi = table.Column<double>(nullable: false),
+                    IndexEnergyMinusRc = table.Column<double>(nullable: false)
                 },
                 constraints: table =>
                 {

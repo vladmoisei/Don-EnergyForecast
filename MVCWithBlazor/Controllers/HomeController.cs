@@ -61,17 +61,21 @@ namespace MVCWithBlazor.Controllers
 
             //Cream lista de Index din fisier excel
             List<IndexModel> lista = await _reportService.GetBlumsListFromExcelFileBySarjaAsync(formFile);
-
-            // Actualizam baza de date cu lista de blumuri din fisier
-            //if (lista != null)
-            //{
-            //    foreach (var item in lista)
-            //    {
-            //        _context.Add(item);
-            //        _context.SaveChanges();
-            //    }
-
-            //}
+            //var time = new TimeSpan(0);
+            //var valTime = lista[0].DataOra.TimeOfDay;
+            //var timeNousapte = lista[96].DataOra.TimeOfDay;
+            //var isEgal = time == timeNousapte;
+            //IEnumerable<IndexModel> listaDeAdaugat = lista.Where(x => _reportService.IsTimeOfDayZeroZero(x.DataOra));
+            
+            //Actualizam baza de date cu lista de blumuri din fisier
+            if (lista != null)
+            {
+                foreach (var item in lista)
+                {
+                    _context.Add(item);
+                    _context.SaveChanges();
+                }
+            }
 
             // Redirection la Index
             return RedirectToAction("Index", "Test", new
