@@ -29,7 +29,7 @@ namespace MVCWithBlazor.Services
                     ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
                     var rowCount = worksheet.Dimension.Rows;
 
-                    for (int row = 3; row <= rowCount; row++)
+                    for (int row = 3; row <= rowCount + 1; row++)
                     {
                         DateTime dateTime = ReturnareDataFromExcel(worksheet.Cells[row, 1].Value.ToString().Trim());
                         if (list.LastOrDefault() != null && list.LastOrDefault().DataOra == dateTime)
@@ -38,7 +38,7 @@ namespace MVCWithBlazor.Services
                         {
                             list.Add(new IndexModel
                             {
-                                DataOra = ReturnareDataFromExcel(worksheet.Cells[row, 1].Value.ToString().Trim()),
+                                DataOra = dateTime,
                                 EdisStatus = Convert.ToInt32(worksheet.Cells[row, 2].Value.ToString().Trim()),
                                 IndexEnergyPlusA = Convert.ToDouble(worksheet.Cells[row, 3].Value.ToString().Trim()),
                                 IndexEnergyMinusA = Convert.ToDouble(worksheet.Cells[row, 4].Value.ToString().Trim()),

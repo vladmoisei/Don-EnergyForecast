@@ -78,3 +78,11 @@ body {
 .validation-summary-errors {
     color: red;
 }
+
+.background__galben {
+    background-color: yellow;
+}
+
+.ascuns {
+    display: none;
+}

@@ -5,79 +5,122 @@
 }
 
 <h1>Indexes</h1>
+@using Syncfusion.EJ2
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.IndexModelID)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DataOra)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EdisStatus)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IndexEnergyPlusA)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IndexEnergyMinusA)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IndexEnergyPlusRi)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IndexEnergyPlusRc)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IndexEnergyMinusRi)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IndexEnergyMinusRc)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.IndexModelID)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DataOra)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EdisStatus)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IndexEnergyPlusA)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IndexEnergyMinusA)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IndexEnergyPlusRi)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IndexEnergyPlusRc)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IndexEnergyMinusRi)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IndexEnergyMinusRc)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div class="row">
+    <form method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="Indexes">
+        <div class="form-group">
+            <div class="col-md-12 control-section">
+                <div id="wrapper" class="daterangepicker-section">
+                    <div id="daterangepicker-control">
+                        <ejs-daterangepicker id="daterangepicker" change="onchange" format="dd.MM.yyyy HH:mm" startDate="@ViewBag.start" endDate="@ViewBag.end" placeholder="Choose a Range"></ejs-daterangepicker>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group ascuns">
+            <div class="col-md-10">
+                <input id="startDate" name="startDate" type="datetime" class="form-control" value="@ViewBag.start" />
+            </div>
+        </div>
+        <div class="form-group ascuns">
+            <div class="col-md-10">
+                <input id="endDate" name="endDate" type="datetime" class="form-control" value="@ViewBag.end" />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-10">
+                <input type="submit" value="Show data" />
+            </div>
+        </div>
+    </form>
+        <span class="validation-summary-errors">@ViewBag.Mesaj</span>
+    </div>
+
+    <p>
+        <a asp-action="UploadDataFromFile">Upload new data from file</a>
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.IndexModelID)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DataOra)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EdisStatus)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.IndexEnergyPlusA)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.IndexEnergyMinusA)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.IndexEnergyPlusRi)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.IndexEnergyPlusRc)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.IndexEnergyMinusRi)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.IndexEnergyMinusRc)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr class=@(item.DataOra.Hour==0?"background__galben":"")>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IndexModelID)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DataOra)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EdisStatus)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IndexEnergyPlusA)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IndexEnergyMinusA)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IndexEnergyPlusRi)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IndexEnergyPlusRc)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IndexEnergyMinusRi)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IndexEnergyMinusRc)
+                    </td>
+                    @*<td>
+                            @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                            @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                            @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                        </td>*@
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <script>
+        function onchange(args) {
+            var dateRangepickerOBJ = document.getElementById('daterangepicker').ej2_instances[0];
+            /*Apply selected format to the component*/
+            var startDateOBJ = document.getElementById('startDate');
+            var endDateOBJ = document.getElementById('endDate');
+            startDateOBJ.value = dateRangepickerOBJ.startDate;
+            endDateOBJ.value = dateRangepickerOBJ.endDate;
+        }
+    </script>
