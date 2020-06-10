@@ -35,7 +35,7 @@ namespace MVCWithBlazor.Controllers
         {
             // Show Indexes between fisrt and last of current Month
             var startDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
-            var endDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month));
+            var endDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month + 1, 1);
             ViewBag.start = startDate;
             ViewBag.end = endDate;
 
@@ -53,6 +53,17 @@ namespace MVCWithBlazor.Controllers
             return View(lista);
         }
 
+        public IActionResult IndexEnergyPlusA()
+        {
+            // Show Indexes between fisrt and last of current Month
+            var startDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+            var endDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month));
+            ViewBag.start = startDate;
+            ViewBag.end = endDate;
+
+            List<IndexModel> lista = _context.Indexes.Where(elem => elem.DataOra >= startDate && elem.DataOra <= endDate).ToList();
+            return View(lista);
+        }
         [HttpGet]
         public IActionResult UploadDataFromFile()
         {

@@ -28,5 +28,18 @@ namespace MVCWithBlazor.Models
         public double IndexEnergyMinusRi { get; set; }
         [Display(Name = "Energy -Rc")]
         public double IndexEnergyMinusRc { get; set; }
+        public int Ora { get; set; }
+        [Display(Name = "Value +A")]
+        public double ValueEnergyPlusA { get; set; }
+        [Display(Name = "Value +Ri")]
+        public double ValueEnergyPlusRi { get; set; }
+        [Display(Name = "Value -Rc")]
+        public double ValueEnergyMinusRc { get; set; }
+        [Display(Name = "Val CosFi Inductiv")]
+        public double CosFiInductiv { get; set; }
+        [Display(Name = "Val CosFi Capacitiv")]
+        public double CosFiCapacitiv { get; set; }
+        [Display(Name = "Facturare Ri+")]
+        public double EnergiiOrareFacturareRiPlus { get; set; }
     }
 }

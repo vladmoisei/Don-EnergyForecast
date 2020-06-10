@@ -29,7 +29,7 @@ namespace MVCWithBlazor.Services
                     ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
                     var rowCount = worksheet.Dimension.Rows;
 
-                    for (int row = 3; row <= rowCount + 1; row++)
+                    for (int row = 3; row <= (rowCount + 1); row++)
                     {
                         DateTime dateTime = ReturnareDataFromExcel(worksheet.Cells[row, 1].Value.ToString().Trim());
                         if (list.LastOrDefault() != null && list.LastOrDefault().DataOra == dateTime)
@@ -46,7 +46,16 @@ namespace MVCWithBlazor.Services
                                 IndexEnergyPlusRc = Convert.ToDouble(worksheet.Cells[row, 6].Value.ToString().Trim()),
                                 IndexEnergyMinusRi = Convert.ToDouble(worksheet.Cells[row, 7].Value.ToString().Trim()),
                                 IndexEnergyMinusRc = Convert.ToDouble(worksheet.Cells[row, 8].Value.ToString().Trim()),
+                                Ora = dateTime.Hour + 1,
                             });
+                            if (list.Count > 1)
+                            {
+                                list[list.Count - 2].ValueEnergyPlusA = GetCalculateValueEnergyPlusA(list[list.Count - 1], list[list.Count - 2]);
+                                    Math.Round(list[list.Count - 1].IndexEnergyPlusA - list[list.Count - 2].IndexEnergyPlusA);
+                                list[list.Count - 2].ValueEnergyPlusRi = Math.Round(list[list.Count - 1].IndexEnergyPlusRi - list[list.Count - 2].IndexEnergyPlusRi);
+                                list[list.Count - 2].ValueEnergyMinusRc = Math.Round(list[list.Count - 1].IndexEnergyMinusRc - list[list.Count - 2].IndexEnergyMinusRc);
+                            }
+
                         }
                     }
                 }
@@ -64,18 +73,29 @@ namespace MVCWithBlazor.Services
             return dateTime;
         }
 
-        // Check if it is Fix Hour
+        // Check if it is Fix Hour hh:00:00
         public bool IsFixHour(DateTime dateTime)
         {
-            string timp = dateTime.TimeOfDay.ToString().Substring(3,2);
+            string timp = dateTime.TimeOfDay.ToString().Substring(3, 2);
             if (timp == "00") return true;
             return false;
         }
-        // Check if is hour 00:00 
+        // Check if is hour 00:00:00 
         public bool IsTimeOfDayZeroZero(DateTime dateTime)
         {
             if (dateTime.TimeOfDay == new TimeSpan(0)) return true;
             return false;
         }
+
+        // GetCalculateValueEnergy+A
+        public double GetCalculateValueEnergyPlusA(IndexModel elemMinusUnu, IndexModel elemMinusDoi)
+        {
+            return Math.Round(elemMinusUnu.IndexEnergyPlusA - elemMinusDoi.IndexEnergyPlusA);
+        }
+        // GetCalculateValueEnergyPlusRi
+        // GetCalculateValueEnergyMinusRc
+        // GetCalculateValueCosFiInductiv
+        // GetCalculateValueCosFiCapacitiv
+        // GetCalculateValueEnergiiOrareFacturareRiPlus
     }
 }

@@ -4,14 +4,16 @@ using MVCWithBlazor.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MVCWithBlazor.Migrations
 {
     [DbContext(typeof(ReportDbContext))]
-    partial class ReportDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200610132948_AddValuesToIndeModel")]
+    partial class AddValuesToIndeModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -26,20 +28,11 @@ namespace MVCWithBlazor.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<double>("CosFiCapacitiv")
-                        .HasColumnType("float");
-
-                    b.Property<double>("CosFiInductiv")
-                        .HasColumnType("float");
-
                     b.Property<DateTime>("DataOra")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("EdisStatus")
                         .HasColumnType("int");
-
-                    b.Property<double>("EnergiiOrareFacturareRiPlus")
-                        .HasColumnType("float");
 
                     b.Property<double>("IndexEnergyMinusA")
                         .HasColumnType("float");
