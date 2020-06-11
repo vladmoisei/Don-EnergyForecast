@@ -51,9 +51,11 @@ namespace MVCWithBlazor.Services
                             if (list.Count > 1)
                             {
                                 list[list.Count - 2].ValueEnergyPlusA = GetCalculateValueEnergyPlusA(list[list.Count - 1], list[list.Count - 2]);
-                                    Math.Round(list[list.Count - 1].IndexEnergyPlusA - list[list.Count - 2].IndexEnergyPlusA);
-                                list[list.Count - 2].ValueEnergyPlusRi = Math.Round(list[list.Count - 1].IndexEnergyPlusRi - list[list.Count - 2].IndexEnergyPlusRi);
-                                list[list.Count - 2].ValueEnergyMinusRc = Math.Round(list[list.Count - 1].IndexEnergyMinusRc - list[list.Count - 2].IndexEnergyMinusRc);
+                                list[list.Count - 2].ValueEnergyPlusRi = GetCalculateValueEnergyPlusRi(list[list.Count - 1], list[list.Count - 2]);
+                                list[list.Count - 2].ValueEnergyMinusRc = GetCalculateValueEnergyMinusRc(list[list.Count - 1], list[list.Count - 2]);
+                                list[list.Count - 2].CosFiInductiv = GetCalculateValueCosFiInductiv(list[list.Count - 2]);
+                                list[list.Count - 2].CosFiCapacitiv = GetCalculateValueCosFiCapacitiv(list[list.Count - 2]);
+                                list[list.Count - 2].EnergiiOrareFacturareRiPlus = GetCalculateValueEnergiiOrareFacturareRiPlus(list[list.Count - 2]);
                             }
 
                         }
@@ -87,15 +89,35 @@ namespace MVCWithBlazor.Services
             return false;
         }
 
-        // GetCalculateValueEnergy+A
+        // Get Calculate Value Energy +A
         public double GetCalculateValueEnergyPlusA(IndexModel elemMinusUnu, IndexModel elemMinusDoi)
         {
             return Math.Round(elemMinusUnu.IndexEnergyPlusA - elemMinusDoi.IndexEnergyPlusA);
         }
-        // GetCalculateValueEnergyPlusRi
-        // GetCalculateValueEnergyMinusRc
-        // GetCalculateValueCosFiInductiv
-        // GetCalculateValueCosFiCapacitiv
-        // GetCalculateValueEnergiiOrareFacturareRiPlus
+        // Get Calculate Value Energy +Ri
+        public double GetCalculateValueEnergyPlusRi(IndexModel elemMinusUnu, IndexModel elemMinusDoi)
+        {
+            return Math.Round(elemMinusUnu.IndexEnergyPlusRi - elemMinusDoi.IndexEnergyPlusRi);
+        }
+        // Get Calculate Value Energy -Rc
+        public double GetCalculateValueEnergyMinusRc(IndexModel elemMinusUnu, IndexModel elemMinusDoi)
+        {
+            return Math.Round(elemMinusUnu.IndexEnergyMinusRc - elemMinusDoi.IndexEnergyMinusRc);
+        }
+        // Get Calculate Value Cos Fi Inductiv
+        public double GetCalculateValueCosFiInductiv(IndexModel elemMinusDoi)
+        {
+            return Math.Round(elemMinusDoi.ValueEnergyPlusA / Math.Sqrt(Math.Pow(elemMinusDoi.ValueEnergyPlusA, 2)+ Math.Pow(elemMinusDoi.ValueEnergyPlusRi, 2)), 2);
+        }
+        // Get Calculate Value Cos Fi Capacitiv
+        public double GetCalculateValueCosFiCapacitiv(IndexModel elemMinusDoi)
+        {
+            return Math.Round(elemMinusDoi.ValueEnergyPlusA / Math.Sqrt(Math.Pow(elemMinusDoi.ValueEnergyPlusA, 2) + Math.Pow(elemMinusDoi.ValueEnergyMinusRc, 2)), 2);
+        }
+        // Get Calculate Value Energii Orare Facturare Ri+
+        public double GetCalculateValueEnergiiOrareFacturareRiPlus(IndexModel elemMinusDoi)
+        {
+            return Math.Round(elemMinusDoi.ValueEnergyPlusRi - Math.Tan(Math.Acos(0.9)) * elemMinusDoi.ValueEnergyPlusA, 2) > 0 ? Math.Round(elemMinusDoi.ValueEnergyPlusRi - Math.Tan(Math.Acos(0.9)) * elemMinusDoi.ValueEnergyPlusA) : 0;
+        }
     }
 }
