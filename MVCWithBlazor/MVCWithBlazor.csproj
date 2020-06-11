@@ -5,7 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Components\" />
     <Folder Include="wwwroot\lib\datatable\" />
   </ItemGroup>
 

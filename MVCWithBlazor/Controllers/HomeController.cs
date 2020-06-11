@@ -53,17 +53,6 @@ namespace MVCWithBlazor.Controllers
             return View(lista);
         }
 
-        public IActionResult IndexEnergyPlusA()
-        {
-            // Show Indexes between fisrt and last of current Month
-            var startDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
-            var endDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month));
-            ViewBag.start = startDate;
-            ViewBag.end = endDate;
-
-            List<IndexModel> lista = _context.Indexes.Where(elem => elem.DataOra >= startDate && elem.DataOra <= endDate).ToList();
-            return View(lista);
-        }
         [HttpGet]
         public IActionResult UploadDataFromFile()
         {
@@ -110,7 +99,16 @@ namespace MVCWithBlazor.Controllers
             return RedirectToAction("Indexes", "Home");
         }
 
-
+        public IActionResult ViewReportOnMotnh()
+        {
+            return View();
+        }
+        [HttpPost]
+        public IActionResult ViewReportOnMotnh(string datepicker)
+        {
+            DateTime data = Convert.ToDateTime(datepicker);
+            return View();
+        }
 
         [Authorize(Roles = "Member, Admin")]
         [Authorize(Policy = "Dep")]
