@@ -12,7 +12,7 @@
             <div class=" control-section">
                 <div id="wrapper" class="datepicker-section">
                     <div id="datepicker-control">
-                        <ejs-datepicker id="datepicker" value=DateTime.Now format="MMMM y" start="Year" depth="Year"></ejs-datepicker>
+                        <ejs-datepicker id="datepicker" value=ViewBag.Data  format="MMMM y" start="Year" depth="Year"></ejs-datepicker>
                     </div>
                 </div>
             </div>
@@ -32,34 +32,31 @@
     <span class="validation-summary-errors">@ViewBag.Mesaj</span>
 </div>
 
-<ul class="nav nav-tabs">
-    <li class="nav-item">
-        <a class="nav-link active" href="#">Active</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="#">Link</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="#">Link</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link disabled" href="#">Disabled</a>
-    </li>
-</ul>
-
 <ul class="nav nav-tabs" id="myTab" role="tablist">
     <li class="nav-item">
-        <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a>
+        <a class="nav-link active" id="energyPlusA-tab" data-toggle="tab" href="#energyPlusA" role="tab" aria-controls="energyPlusA" aria-selected="true">Energy A+</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Profile</a>
+        <a class="nav-link" id="energyPlusRi-tab" data-toggle="tab" href="#energyPlusRi" role="tab" aria-controls="energyPlusRi" aria-selected="false">Energy Ri+</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Contact</a>
+        <a class="nav-link" id="energyMinusRc-tab" data-toggle="tab" href="#energyMinusRc" role="tab" aria-controls="energyMinusRc" aria-selected="false">Energy Rc-</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="cosFiInductiv-tab" data-toggle="tab" href="#cosFiInductiv" role="tab" aria-controls="cosFiInductiv" aria-selected="false">Cos fi inductiv</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="cosFiCapacitiv-tab" data-toggle="tab" href="#cosFiCapacitiv" role="tab" aria-controls="cosFiCapacitiv" aria-selected="false">Cos fi capacitiv</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="RiPlusEnergiiOrare-tab" data-toggle="tab" href="#RiPlusEnergiiOrare" role="tab" aria-controls="RiPlusEnergiiOrare" aria-selected="false">Ri+ Energii Orare</a>
     </li>
 </ul>
 <div class="tab-content" id="myTabContent">
-    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">Primul</div>
-    <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">Doi</div>
-    <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">Trei</div>
+    <div class="tab-pane fade show active" id="energyPlusA" role="tabpanel" aria-labelledby="energyPlusA-tab">Primul</div>
+    <div class="tab-pane fade" id="energyPlusRi" role="tabpanel" aria-labelledby="energyPlusRi-tab">Doi</div>
+    <div class="tab-pane fade" id="energyMinusRc" role="tabpanel" aria-labelledby="energyMinusRc-tab">Trei</div>
+    <div class="tab-pane fade" id="cosFiInductiv" role="tabpanel" aria-labelledby="cosFiInductiv-tab">Patru</div>
+    <div class="tab-pane fade" id="cosFiCapacitiv" role="tabpanel" aria-labelledby="cosFiCapacitiv-tab">Cinci</div>
+    <div class="tab-pane fade" id="RiPlusEnergiiOrare" role="tabpanel" aria-labelledby="RiPlusEnergiiOrare-tab">Sase</div>
 </div>

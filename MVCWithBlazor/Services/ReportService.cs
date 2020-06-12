@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualBasic;
+using MVCWithBlazor.Data;
 
 namespace MVCWithBlazor.Services
 {
@@ -107,7 +108,7 @@ namespace MVCWithBlazor.Services
         // Get Calculate Value Cos Fi Inductiv
         public double GetCalculateValueCosFiInductiv(IndexModel elemMinusDoi)
         {
-            return Math.Round(elemMinusDoi.ValueEnergyPlusA / Math.Sqrt(Math.Pow(elemMinusDoi.ValueEnergyPlusA, 2)+ Math.Pow(elemMinusDoi.ValueEnergyPlusRi, 2)), 2);
+            return Math.Round(elemMinusDoi.ValueEnergyPlusA / Math.Sqrt(Math.Pow(elemMinusDoi.ValueEnergyPlusA, 2) + Math.Pow(elemMinusDoi.ValueEnergyPlusRi, 2)), 2);
         }
         // Get Calculate Value Cos Fi Capacitiv
         public double GetCalculateValueCosFiCapacitiv(IndexModel elemMinusDoi)
@@ -119,5 +120,48 @@ namespace MVCWithBlazor.Services
         {
             return Math.Round(elemMinusDoi.ValueEnergyPlusRi - Math.Tan(Math.Acos(0.9)) * elemMinusDoi.ValueEnergyPlusA, 2) > 0 ? Math.Round(elemMinusDoi.ValueEnergyPlusRi - Math.Tan(Math.Acos(0.9)) * elemMinusDoi.ValueEnergyPlusA) : 0;
         }
+
+        // Get Values For Selected Month
+        public ReportMonthViewModel GetViewModelForSelectedMonth(ReportDbContext context, DateTime data)
+        {
+            int zileInLuna = DateTime.DaysInMonth(data.Year, data.Month);
+            ReportMonthViewModel raport = new ReportMonthViewModel
+            {
+                Luna = data.Month,
+                An = data.Year,
+                ZileInLuna = zileInLuna,
+                TabeleValori = new ReportMonthValoriViewModel[]{
+                    new ReportMonthValoriViewModel { Denumire = "energyPlusA" , Valori = new double[zileInLuna , 24]},
+                    new ReportMonthValoriViewModel { Denumire = "energyPlusRi" , Valori = new double[zileInLuna , 24] },
+                    new ReportMonthValoriViewModel { Denumire = "energyMinusRc" , Valori = new double[zileInLuna , 24] },
+                    new ReportMonthValoriViewModel { Denumire = "cosFiInductiv" , Valori = new double[zileInLuna , 24] },
+                    new ReportMonthValoriViewModel { Denumire = "cosFiCapacitiv" , Valori = new double[zileInLuna , 24] },
+                    new ReportMonthValoriViewModel { Denumire = "RiPlusEnergiiOrare" , Valori = new double[zileInLuna , 24] }
+                }
+            };
+
+            for (int i = 1; i <= raport.ZileInLuna; i++)
+            {
+                for (int j = 0; j < 24; j++)
+                {
+                        //raport.TabeleValori[0].Valori[i, j]
+                        var variabila = context.Indexes.Where(elem =>
+                            elem.DataOra.Year == data.Year &&
+                            elem.DataOra.Month == data.Month &&
+                            elem.DataOra.Day == i &&
+                            elem.DataOra.Hour == j
+                        ).Select(x => new ElemSelectie{ // TO DO ELEMENT SELECTIE
+                            energyPlusA = x.ValueEnergyPlusA ,
+                            energyPlusRi = x.ValueEnergyPlusRi
+                        ).FirstOrDefault();
+                        if (variabila == null) continue;
+                        double d = Convert.ToDouble(variabila);
+
+
+                }
+            }
+            return raport;
+        }
+
     }
 }

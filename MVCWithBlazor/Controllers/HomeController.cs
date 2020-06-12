@@ -101,12 +101,15 @@ namespace MVCWithBlazor.Controllers
 
         public IActionResult ViewReportOnMotnh()
         {
+            ViewBag.Data = DateTime.Now;
             return View();
         }
         [HttpPost]
         public IActionResult ViewReportOnMotnh(string datepicker)
         {
             DateTime data = Convert.ToDateTime(datepicker);
+            ViewBag.Data = data;
+            _reportService.GetViewModelForSelectedMonth(_context, data);
             return View();
         }
 
