@@ -102,15 +102,16 @@ namespace MVCWithBlazor.Controllers
         public IActionResult ViewReportOnMotnh()
         {
             ViewBag.Data = DateTime.Now;
-            return View();
+            ReportMonthViewModel raport = _reportService.GetViewModelForSelectedMonth(_context, DateTime.Now);
+            return View(raport);
         }
         [HttpPost]
-        public IActionResult ViewReportOnMotnh(string datepicker)
+        public IActionResult ViewReportOnMotnh(string datepicker, string submitButon)
         {
             DateTime data = Convert.ToDateTime(datepicker);
             ViewBag.Data = data;
-            _reportService.GetViewModelForSelectedMonth(_context, data);
-            return View();
+            ReportMonthViewModel raport = _reportService.GetViewModelForSelectedMonth(_context, data);
+            return View(raport);
         }
 
         [Authorize(Roles = "Member, Admin")]

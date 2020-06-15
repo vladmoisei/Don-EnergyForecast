@@ -1,4 +1,4 @@
-﻿
+﻿@model MVCWithBlazor.Models.ReportMonthViewModel
 @using Syncfusion.EJ2
 @{
     ViewData["Title"] = "Selectie luna vizualizare date";
@@ -12,7 +12,7 @@
             <div class=" control-section">
                 <div id="wrapper" class="datepicker-section">
                     <div id="datepicker-control">
-                        <ejs-datepicker id="datepicker" value=ViewBag.Data  format="MMMM y" start="Year" depth="Year"></ejs-datepicker>
+                        <ejs-datepicker id="datepicker" value=ViewBag.Data format="MMMM y" start="Year" depth="Year"></ejs-datepicker>
                     </div>
                 </div>
             </div>
@@ -25,7 +25,8 @@
         </div>
         <div class="form-group">
             <div class="col-md-10">
-                <input type="submit" value="Show data" />
+                <input type="submit" name="submitButon" value="Show data" />
+                <input type="submit" name="submitButon" value="Export To Excel" />
             </div>
         </div>
     </form>
@@ -53,10 +54,245 @@
     </li>
 </ul>
 <div class="tab-content" id="myTabContent">
-    <div class="tab-pane fade show active" id="energyPlusA" role="tabpanel" aria-labelledby="energyPlusA-tab">Primul</div>
-    <div class="tab-pane fade" id="energyPlusRi" role="tabpanel" aria-labelledby="energyPlusRi-tab">Doi</div>
-    <div class="tab-pane fade" id="energyMinusRc" role="tabpanel" aria-labelledby="energyMinusRc-tab">Trei</div>
-    <div class="tab-pane fade" id="cosFiInductiv" role="tabpanel" aria-labelledby="cosFiInductiv-tab">Patru</div>
-    <div class="tab-pane fade" id="cosFiCapacitiv" role="tabpanel" aria-labelledby="cosFiCapacitiv-tab">Cinci</div>
-    <div class="tab-pane fade" id="RiPlusEnergiiOrare" role="tabpanel" aria-labelledby="RiPlusEnergiiOrare-tab">Sase</div>
+    <div class="tab-pane fade show active" id="energyPlusA" role="tabpanel" aria-labelledby="energyPlusA-tab">
+        <h2>@Model.TabeleValori[0].Denumire</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">Ora/ Zi</th>
+                    @for (int i = 1; i <= Model.ZileInLuna; i++)
+                    {
+                        <th scope="col">@i</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @for (int j = 0; j < 24; j++)
+                {
+                    <tr>
+                        <th>@(j + 1)</th>
+                        @for (int i = 1; i <= Model.ZileInLuna; i++)
+                        {
+                            <td>
+                                @Model.TabeleValori[0].Valori[i, j]
+                            </td>
+                        }
+                    </tr>
+                }
+                <tr>
+                    <th>Total: </th>
+                    @for (int i = 1; i <= Model.ZileInLuna; i++)
+                    {
+                        <td>
+                            @Model.TabeleValori[0].TotalperZi[i]
+                        </td>
+                    }
+                    <td>
+                        @Model.TabeleValori[0].TotalperLuna kWh
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="tab-pane fade" id="energyPlusRi" role="tabpanel" aria-labelledby="energyPlusRi-tab">
+        <h2>@Model.TabeleValori[1].Denumire</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">Ora/ Zi</th>
+                    @for (int i = 1; i <= Model.ZileInLuna; i++)
+                    {
+                        <th scope="col">@i</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @for (int j = 0; j < 24; j++)
+                {
+                    <tr>
+                        <th>@(j + 1)</th>
+                        @for (int i = 1; i <= Model.ZileInLuna; i++)
+                        {
+                            <td>
+                                @Model.TabeleValori[1].Valori[i, j]
+                            </td>
+                        }
+                    </tr>
+                }
+                <tr>
+                    <th>Total: </th>
+                    @for (int i = 1; i <= Model.ZileInLuna; i++)
+                    {
+                        <td>
+                            @Model.TabeleValori[1].TotalperZi[i]
+                        </td>
+                    }
+                    <td>
+                        @Model.TabeleValori[1].TotalperLuna kVArh
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="tab-pane fade" id="energyMinusRc" role="tabpanel" aria-labelledby="energyMinusRc-tab">
+        <h2>@Model.TabeleValori[2].Denumire</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">Ora/ Zi</th>
+                    @for (int i = 1; i <= Model.ZileInLuna; i++)
+                    {
+                        <th scope="col">@i</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @for (int j = 0; j < 24; j++)
+                {
+                    <tr>
+                        <th>@(j + 1)</th>
+                        @for (int i = 1; i <= Model.ZileInLuna; i++)
+                        {
+                            <td>
+                                @Model.TabeleValori[2].Valori[i, j]
+                            </td>
+                        }
+                    </tr>
+                }
+                <tr>
+                    <th>Total: </th>
+                    @for (int i = 1; i <= Model.ZileInLuna; i++)
+                    {
+                        <td>
+                            @Model.TabeleValori[2].TotalperZi[i]
+                        </td>
+                    }
+                <td>
+                    @Model.TabeleValori[2].TotalperLuna kVArh
+                </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="tab-pane fade" id="cosFiInductiv" role="tabpanel" aria-labelledby="cosFiInductiv-tab">
+        <h2>@Model.TabeleValori[3].Denumire</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">Ora/ Zi</th>
+                    @for (int i = 1; i <= Model.ZileInLuna; i++)
+                    {
+                        <th scope="col">@i</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+
+                @for (int j = 0; j < 24; j++)
+                {
+                    <tr>
+                        <th>@(j + 1)</th>
+                        @for (int i = 1; i <= Model.ZileInLuna; i++)
+                        {
+                            <td>
+                                @Model.TabeleValori[3].Valori[i, j]
+                            </td>
+                        }
+                    </tr>
+                }
+                <tr>
+                    <th>Total: </th>
+                    @for (int i = 1; i <= Model.ZileInLuna; i++)
+                    {
+                        <td>
+                            @Model.TabeleValori[3].TotalperZi[i]
+                        </td>
+                    }
+                    <td>
+                        @Model.TabeleValori[3].TotalperLuna
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="tab-pane fade" id="cosFiCapacitiv" role="tabpanel" aria-labelledby="cosFiCapacitiv-tab">
+        <h2>@Model.TabeleValori[4].Denumire</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">Ora/ Zi</th>
+                    @for (int i = 1; i <= Model.ZileInLuna; i++)
+                    {
+                        <th scope="col">@i</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @for (int j = 0; j < 24; j++)
+                {
+                    <tr>
+                        <th>@(j + 1)</th>
+                        @for (int i = 1; i <= Model.ZileInLuna; i++)
+                        {
+                            <td>
+                                @Model.TabeleValori[4].Valori[i, j]
+                            </td>
+                        }
+                    </tr>
+                }
+                <tr>
+                    <th>Total: </th>
+                    @for (int i = 1; i <= Model.ZileInLuna; i++)
+                    {
+                        <td>
+                            @Model.TabeleValori[4].TotalperZi[i]
+                        </td>
+                    }
+                    <td>
+                        @Model.TabeleValori[4].TotalperLuna
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="tab-pane fade" id="RiPlusEnergiiOrare" role="tabpanel" aria-labelledby="RiPlusEnergiiOrare-tab">
+        <h2>@Model.TabeleValori[5].Denumire</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">Ora/ Zi</th>
+                    @for (int i = 1; i <= Model.ZileInLuna; i++)
+                    {
+                        <th scope="col">@i</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @for (int j = 0; j < 24; j++)
+                {
+                    <tr>
+                        <th>@(j + 1)</th>
+                        @for (int i = 1; i <= Model.ZileInLuna; i++)
+                        {
+                            <td>
+                                @Model.TabeleValori[5].Valori[i, j]
+                            </td>
+                        }
+                    </tr>
+                }
+                <tr>
+                    <th>Total: </th>
+                    @for (int i = 1; i <= Model.ZileInLuna; i++)
+                    {
+                        <td>
+                            @Model.TabeleValori[5].TotalperZi[i]
+                        </td>
+                    }
+                    <td>
+                        @Model.TabeleValori[5].TotalperLuna
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>

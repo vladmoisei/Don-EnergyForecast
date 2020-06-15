@@ -121,24 +121,30 @@ namespace MVCWithBlazor.Services
             return Math.Round(elemMinusDoi.ValueEnergyPlusRi - Math.Tan(Math.Acos(0.9)) * elemMinusDoi.ValueEnergyPlusA, 2) > 0 ? Math.Round(elemMinusDoi.ValueEnergyPlusRi - Math.Tan(Math.Acos(0.9)) * elemMinusDoi.ValueEnergyPlusA) : 0;
         }
 
-        // Get Values For Selected Month
-        public ReportMonthViewModel GetViewModelForSelectedMonth(ReportDbContext context, DateTime data)
+        // Get New Report ReportMonthValoriViewModel
+        public  ReportMonthViewModel GetNewReporthValoriVieModelByDate(DateTime data)
         {
             int zileInLuna = DateTime.DaysInMonth(data.Year, data.Month);
-            ReportMonthViewModel raport = new ReportMonthViewModel
+            return new ReportMonthViewModel
             {
                 Luna = data.Month,
                 An = data.Year,
                 ZileInLuna = zileInLuna,
                 TabeleValori = new ReportMonthValoriViewModel[]{
-                    new ReportMonthValoriViewModel { Denumire = "energyPlusA" , Valori = new double[zileInLuna , 24]},
-                    new ReportMonthValoriViewModel { Denumire = "energyPlusRi" , Valori = new double[zileInLuna , 24] },
-                    new ReportMonthValoriViewModel { Denumire = "energyMinusRc" , Valori = new double[zileInLuna , 24] },
-                    new ReportMonthValoriViewModel { Denumire = "cosFiInductiv" , Valori = new double[zileInLuna , 24] },
-                    new ReportMonthValoriViewModel { Denumire = "cosFiCapacitiv" , Valori = new double[zileInLuna , 24] },
-                    new ReportMonthValoriViewModel { Denumire = "RiPlusEnergiiOrare" , Valori = new double[zileInLuna , 24] }
+                    new ReportMonthValoriViewModel { Denumire = "energyPlusA" , Valori = new double[zileInLuna + 1, 24] , TotalperZi = new double[zileInLuna + 1], TotalperLuna = 0},
+                    new ReportMonthValoriViewModel { Denumire = "energyPlusRi" , Valori = new double[zileInLuna + 1, 24] , TotalperZi = new double[zileInLuna + 1], TotalperLuna = 0},
+                    new ReportMonthValoriViewModel { Denumire = "energyMinusRc" , Valori = new double[zileInLuna + 1, 24] , TotalperZi = new double[zileInLuna + 1], TotalperLuna = 0},
+                    new ReportMonthValoriViewModel { Denumire = "cosFiInductiv" , Valori = new double[zileInLuna + 1, 24] , TotalperZi = new double[zileInLuna + 1], TotalperLuna = 0},
+                    new ReportMonthValoriViewModel { Denumire = "cosFiCapacitiv" , Valori = new double[zileInLuna + 1, 24] , TotalperZi = new double[zileInLuna + 1], TotalperLuna = 0},
+                    new ReportMonthValoriViewModel { Denumire = "RiPlusEnergiiOrare" , Valori = new double[zileInLuna +1, 24] , TotalperZi = new double[zileInLuna + 1], TotalperLuna = 0}
                 }
             };
+        }
+
+        // Get Values For Selected Month
+        public ReportMonthViewModel GetViewModelForSelectedMonth(ReportDbContext context, DateTime data)
+        {
+            ReportMonthViewModel raport = GetNewReporthValoriVieModelByDate(data);
 
             for (int i = 1; i <= raport.ZileInLuna; i++)
             {
@@ -150,16 +156,49 @@ namespace MVCWithBlazor.Services
                             elem.DataOra.Month == data.Month &&
                             elem.DataOra.Day == i &&
                             elem.DataOra.Hour == j
-                        ).Select(x => new ElemSelectie{ // TO DO ELEMENT SELECTIE
-                            energyPlusA = x.ValueEnergyPlusA ,
-                            energyPlusRi = x.ValueEnergyPlusRi
+                        ).Select(x => new ElemSelectieModel
+                        {
+                            EnergyPlusA = x.ValueEnergyPlusA,
+                            EnergyPlusRi = x.ValueEnergyPlusRi,
+                            EnergyMinusRc = x.ValueEnergyMinusRc,
+                            CosFiInductiv = x.CosFiInductiv,
+                            CosFiCapacitiv = x.CosFiCapacitiv,
+                            RiPlusEnergiiOrare = x.EnergiiOrareFacturareRiPlus
+                        }
                         ).FirstOrDefault();
                         if (variabila == null) continue;
-                        double d = Convert.ToDouble(variabila);
 
-
+                    raport.TabeleValori[0].Valori[i, j] = variabila.EnergyPlusA;
+                    raport.TabeleValori[1].Valori[i, j] = variabila.EnergyPlusRi;
+                    raport.TabeleValori[2].Valori[i, j] = variabila.EnergyMinusRc;
+                    raport.TabeleValori[3].Valori[i, j] = variabila.CosFiInductiv;
+                    raport.TabeleValori[4].Valori[i, j] = variabila.CosFiCapacitiv;
+                    raport.TabeleValori[5].Valori[i, j] = variabila.RiPlusEnergiiOrare;
                 }
+                for (int j = 0; j < 24; j++)
+                {
+                    raport.TabeleValori[0].TotalperZi[i] += raport.TabeleValori[0].Valori[i, j];
+                    raport.TabeleValori[1].TotalperZi[i] += raport.TabeleValori[1].Valori[i, j];
+                    raport.TabeleValori[2].TotalperZi[i] += raport.TabeleValori[2].Valori[i, j];
+                    raport.TabeleValori[3].TotalperZi[i] += raport.TabeleValori[3].Valori[i, j];
+                    raport.TabeleValori[4].TotalperZi[i] += raport.TabeleValori[4].Valori[i, j];
+                    raport.TabeleValori[5].TotalperZi[i] += raport.TabeleValori[5].Valori[i, j];
+                }
+
+                // For cos Fi afisam media aritmetica
+                raport.TabeleValori[3].TotalperZi[i] = Math.Round(raport.TabeleValori[3].TotalperZi[i] / 24, 2);
+                raport.TabeleValori[4].TotalperZi[i] = Math.Round(raport.TabeleValori[4].TotalperZi[i] / 24, 2);
+
+                raport.TabeleValori[0].TotalperLuna += raport.TabeleValori[0].TotalperZi[i];
+                raport.TabeleValori[1].TotalperLuna += raport.TabeleValori[1].TotalperZi[i];
+                raport.TabeleValori[2].TotalperLuna += raport.TabeleValori[2].TotalperZi[i];
+                raport.TabeleValori[3].TotalperLuna += raport.TabeleValori[3].TotalperZi[i];
+                raport.TabeleValori[4].TotalperLuna += raport.TabeleValori[4].TotalperZi[i];
+                raport.TabeleValori[5].TotalperLuna += raport.TabeleValori[5].TotalperZi[i];
             }
+            // For cos Fi afisam media aritmetica
+            raport.TabeleValori[3].TotalperLuna = raport.TabeleValori[3].TotalperLuna / raport.ZileInLuna;
+            raport.TabeleValori[4].TotalperLuna = raport.TabeleValori[4].TotalperLuna / raport.ZileInLuna;
             return raport;
         }
 
