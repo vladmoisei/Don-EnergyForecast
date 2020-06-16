@@ -111,7 +111,16 @@ namespace MVCWithBlazor.Controllers
             DateTime data = Convert.ToDateTime(datepicker);
             ViewBag.Data = data;
             ReportMonthViewModel raport = _reportService.GetViewModelForSelectedMonth(_context, data);
+            if (submitButon == "Show data") // If it is click Show Data Button Return View with data
+                return View(raport);
+
+            if (submitButon == "Export To Excel") // Else if it is clicked export to excel return an excel file report 
+            {
+                List<IndexModel> listaIndex = _context.Indexes.Where(elem => elem.DataOra.Month == data.Month && elem.DataOra.Year == data.Year).ToList();
+                return _reportService.GetExcelFileFromReport(listaIndex, raport);
+            }
             return View(raport);
+
         }
 
         [Authorize(Roles = "Member, Admin")]

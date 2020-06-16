@@ -9,6 +9,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualBasic;
 using MVCWithBlazor.Data;
+using Microsoft.AspNetCore.Mvc;
+using MVCWithBlazor.Controllers;
+using OfficeOpenXml.Style;
 
 namespace MVCWithBlazor.Services
 {
@@ -122,7 +125,7 @@ namespace MVCWithBlazor.Services
         }
 
         // Get New Report ReportMonthValoriViewModel
-        public  ReportMonthViewModel GetNewReporthValoriVieModelByDate(DateTime data)
+        public ReportMonthViewModel GetNewReporthValoriVieModelByDate(DateTime data)
         {
             int zileInLuna = DateTime.DaysInMonth(data.Year, data.Month);
             return new ReportMonthViewModel
@@ -150,23 +153,23 @@ namespace MVCWithBlazor.Services
             {
                 for (int j = 0; j < 24; j++)
                 {
-                        //raport.TabeleValori[0].Valori[i, j]
-                        var variabila = context.Indexes.Where(elem =>
-                            elem.DataOra.Year == data.Year &&
-                            elem.DataOra.Month == data.Month &&
-                            elem.DataOra.Day == i &&
-                            elem.DataOra.Hour == j
-                        ).Select(x => new ElemSelectieModel
-                        {
-                            EnergyPlusA = x.ValueEnergyPlusA,
-                            EnergyPlusRi = x.ValueEnergyPlusRi,
-                            EnergyMinusRc = x.ValueEnergyMinusRc,
-                            CosFiInductiv = x.CosFiInductiv,
-                            CosFiCapacitiv = x.CosFiCapacitiv,
-                            RiPlusEnergiiOrare = x.EnergiiOrareFacturareRiPlus
-                        }
-                        ).FirstOrDefault();
-                        if (variabila == null) continue;
+                    //raport.TabeleValori[0].Valori[i, j]
+                    var variabila = context.Indexes.Where(elem =>
+                        elem.DataOra.Year == data.Year &&
+                        elem.DataOra.Month == data.Month &&
+                        elem.DataOra.Day == i &&
+                        elem.DataOra.Hour == j
+                    ).Select(x => new ElemSelectieModel
+                    {
+                        EnergyPlusA = x.ValueEnergyPlusA,
+                        EnergyPlusRi = x.ValueEnergyPlusRi,
+                        EnergyMinusRc = x.ValueEnergyMinusRc,
+                        CosFiInductiv = x.CosFiInductiv,
+                        CosFiCapacitiv = x.CosFiCapacitiv,
+                        RiPlusEnergiiOrare = x.EnergiiOrareFacturareRiPlus
+                    }
+                    ).FirstOrDefault();
+                    if (variabila == null) continue;
 
                     raport.TabeleValori[0].Valori[i, j] = variabila.EnergyPlusA;
                     raport.TabeleValori[1].Valori[i, j] = variabila.EnergyPlusRi;
@@ -202,5 +205,248 @@ namespace MVCWithBlazor.Services
             return raport;
         }
 
+        // Get Excel File From Report
+        public FileStreamResult GetExcelFileFromReport(List<IndexModel> listOfIndexes, ReportMonthViewModel report)
+        {
+            var controler = new ProbaController();
+            var stream = new MemoryStream();
+
+            using (var pck = new ExcelPackage(stream))
+            {
+                // EXCEL WORKSHEET FOR INDEXES
+                ExcelWorksheet wsIndex = pck.Workbook.Worksheets.Add($"{report.An}.{report.Luna} Indexe orare");
+                wsIndex.Cells["A1:Z1"].Style.Font.Bold = true;
+
+                wsIndex.Cells["A1"].Value = "Clock";
+                wsIndex.Cells["B1"].Value = "EDIS status";
+                wsIndex.Cells["C1"].Value = "Energy +A";
+                wsIndex.Cells["D1"].Value = "Energy -A";
+                wsIndex.Cells["E1"].Value = "Energy +Ri";
+                wsIndex.Cells["F1"].Value = "Energy +Rc";
+                wsIndex.Cells["G1"].Value = "Energy -Ri";
+                wsIndex.Cells["H1"].Value = "Energy -Rc";
+
+                int rowStart = 2;
+                foreach (var elem in listOfIndexes)
+                {
+                    wsIndex.Cells[string.Format("A{0}", rowStart)].Value = elem.DataOra;
+                    wsIndex.Cells[string.Format("B{0}", rowStart)].Value = elem.EdisStatus;
+                    wsIndex.Cells[string.Format("C{0}", rowStart)].Value = elem.IndexEnergyPlusA;
+                    wsIndex.Cells[string.Format("D{0}", rowStart)].Value = elem.IndexEnergyMinusA;
+                    wsIndex.Cells[string.Format("E{0}", rowStart)].Value = elem.IndexEnergyPlusRi;
+                    wsIndex.Cells[string.Format("F{0}", rowStart)].Value = elem.IndexEnergyPlusRc;
+                    wsIndex.Cells[string.Format("G{0}", rowStart)].Value = elem.IndexEnergyMinusRi;
+                    wsIndex.Cells[string.Format("H{0}", rowStart)].Value = elem.IndexEnergyMinusRc;
+                    // Set background Yellow color for fix Hour when it starts a new day
+                    if (elem.DataOra.Hour == 0) 
+                    {
+                        wsIndex.Cells[string.Format("A{0}:Z{0}", rowStart)].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        wsIndex.Cells[string.Format("A{0}:Z{0}", rowStart)].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.Yellow);
+                    }
+                    rowStart++;
+                }
+                wsIndex.Cells["A:AZ"].AutoFitColumns();
+
+                // Another SHEET REport
+                // EXCEL WORKSHEET FOR A+ Energii orare
+                ExcelWorksheet wsEnergyPlusA = pck.Workbook.Worksheets.Add($"{report.An}.{report.Luna} A+ energii orare");
+                // Set Head of table header Style
+                wsEnergyPlusA.Cells["A1:Z1"].Style.Font.Bold = true;
+                // Set Values of Table Header
+                wsEnergyPlusA.Cells["A1"].Value = "Ora/ Zi";
+                for (int i = 1; i <= report.ZileInLuna; i++)
+                {
+                    wsEnergyPlusA.Cells[$"{GetCharStringsFromNumber(65 + i)}1"].Value = i;
+                }
+
+                double suma = 0;
+                // Set Values from report in excel file
+                for (int j = 0; j < 24; j++)
+                {
+                    wsEnergyPlusA.Cells[$"A{j + 2}"].Value = j + 1;
+                    for (int i = 1; i <= report.ZileInLuna; i++)
+                    {
+                        wsEnergyPlusA.Cells[$"{GetCharStringsFromNumber(65 + i)}{j + 2}"].Value = report.TabeleValori[0].Valori[i, j];
+                        suma += report.TabeleValori[0].Valori[i, j];
+                    }
+
+
+                    wsEnergyPlusA.Cells[$"A{j + 3}"].Value = " Total: ";
+                    wsEnergyPlusA.Cells[$"B{j + 3}"].Value = $"{suma} kWh";
+                }
+
+                wsEnergyPlusA.Cells["A:AZ"].AutoFitColumns();
+
+                // Another SHEET REport
+                // EXCEL WORKSHEET FOR Ri+ Energii orare
+                ExcelWorksheet wsEnergyPlusRi = pck.Workbook.Worksheets.Add($"{report.An}.{report.Luna} Ri+ energii orare");
+                // Set Head of table header Style
+                wsEnergyPlusRi.Cells["A1:Z1"].Style.Font.Bold = true;
+                // Set Values of Table Header
+                wsEnergyPlusRi.Cells["A1"].Value = "Ora/ Zi";
+                for (int i = 1; i <= report.ZileInLuna; i++)
+                {
+                    wsEnergyPlusRi.Cells[$"{GetCharStringsFromNumber(65 + i)}1"].Value = i;
+                }
+
+                suma = 0;
+                // Set Values from report in excel file
+                for (int j = 0; j < 24; j++)
+                {
+                    wsEnergyPlusRi.Cells[$"A{j + 2}"].Value = j + 1;
+                    for (int i = 1; i <= report.ZileInLuna; i++)
+                    {
+                        wsEnergyPlusRi.Cells[$"{GetCharStringsFromNumber(65 + i)}{j + 2}"].Value = report.TabeleValori[1].Valori[i, j];
+                        suma += report.TabeleValori[1].Valori[i, j];
+                    }
+
+                    wsEnergyPlusRi.Cells[$"A{j + 3}"].Value = " Total: ";
+                    wsEnergyPlusRi.Cells[$"B{j + 3}"].Value = $"{suma} kVArh";
+                }
+
+                wsEnergyPlusRi.Cells["A:AZ"].AutoFitColumns();
+
+                // Another SHEET REport
+                // EXCEL WORKSHEET FOR Rc- Energii orare
+                ExcelWorksheet wsEnergyMinusRc = pck.Workbook.Worksheets.Add($"{report.An}.{report.Luna} Rc- energii orare");
+                // Set Head of table header Style
+                wsEnergyMinusRc.Cells["A1:Z1"].Style.Font.Bold = true;
+                // Set Values of Table Header
+                wsEnergyMinusRc.Cells["A1"].Value = "Ora/ Zi";
+                for (int i = 1; i <= report.ZileInLuna; i++)
+                {
+                    wsEnergyMinusRc.Cells[$"{GetCharStringsFromNumber(65 + i)}1"].Value = i;
+                }
+
+                suma = 0;
+                // Set Values from report in excel file
+                for (int j = 0; j < 24; j++)
+                {
+                    wsEnergyMinusRc.Cells[$"A{j + 2}"].Value = j + 1;
+                    for (int i = 1; i <= report.ZileInLuna; i++)
+                    {
+                        wsEnergyMinusRc.Cells[$"{GetCharStringsFromNumber(65 + i)}{j + 2}"].Value = report.TabeleValori[2].Valori[i, j];
+                        suma += report.TabeleValori[2].Valori[i, j];
+                    }
+
+                    wsEnergyMinusRc.Cells[$"A{j + 3}"].Value = " Total: ";
+                    wsEnergyMinusRc.Cells[$"B{j + 3}"].Value = $"{suma} kVArh";
+                }
+
+                wsEnergyMinusRc.Cells["A:AZ"].AutoFitColumns();
+
+                // Another SHEET REport
+                // EXCEL WORKSHEET FOR Cos Fi Inductiv Energii orare
+                ExcelWorksheet wsCosFiInductiv = pck.Workbook.Worksheets.Add($"{report.An}.{report.Luna} Cos Fi inductiv");
+                // Set Head of table header Style
+                wsCosFiInductiv.Cells["A1:Z1"].Style.Font.Bold = true;
+                // Set Values of Table Header
+                wsCosFiInductiv.Cells["A1"].Value = "Ora/ Zi";
+                for (int i = 1; i <= report.ZileInLuna; i++)
+                {
+                    wsCosFiInductiv.Cells[$"{GetCharStringsFromNumber(65 + i)}1"].Value = i;
+                }
+
+                suma = 0;
+                // Set Values from report in excel file
+                for (int j = 0; j < 24; j++)
+                {
+                    wsCosFiInductiv.Cells[$"A{j + 2}"].Value = j + 1;
+                    for (int i = 1; i <= report.ZileInLuna; i++)
+                    {
+                        wsCosFiInductiv.Cells[$"{GetCharStringsFromNumber(65 + i)}{j + 2}"].Value = report.TabeleValori[3].Valori[i, j];
+                        suma += report.TabeleValori[3].Valori[i, j];
+                    }
+                }
+
+                suma /= (24 * report.ZileInLuna);
+                wsCosFiInductiv.Cells[$"A27"].Value = " Total: ";
+                wsCosFiInductiv.Cells[$"B27"].Value = $"{Math.Round(suma, 2)} cos fi mediu lunar";
+                wsCosFiInductiv.Cells["A:AZ"].AutoFitColumns();
+
+                // Another SHEET REport
+                // EXCEL WORKSHEET FOR Cos Fi Capacitiv Energii orare
+                ExcelWorksheet wsCosFiCapacitiv = pck.Workbook.Worksheets.Add($"{report.An}.{report.Luna} Cos Fi capacitiv");
+                // Set Head of table header Style
+                wsCosFiCapacitiv.Cells["A1:Z1"].Style.Font.Bold = true;
+                // Set Values of Table Header
+                wsCosFiCapacitiv.Cells["A1"].Value = "Ora/ Zi";
+                for (int i = 1; i <= report.ZileInLuna; i++)
+                {
+                    wsCosFiCapacitiv.Cells[$"{GetCharStringsFromNumber(65 + i)}1"].Value = i;
+                }
+
+                suma = 0;
+                // Set Values from report in excel file
+                for (int j = 0; j < 24; j++)
+                {
+                    wsCosFiCapacitiv.Cells[$"A{j + 2}"].Value = j + 1;
+                    for (int i = 1; i <= report.ZileInLuna; i++)
+                    {
+                        wsCosFiCapacitiv.Cells[$"{GetCharStringsFromNumber(65 + i)}{j + 2}"].Value = report.TabeleValori[4].Valori[i, j];
+                        suma += report.TabeleValori[4].Valori[i, j];
+                    }
+                }
+
+                suma /= (24 * report.ZileInLuna);
+                wsCosFiCapacitiv.Cells[$"A27"].Value = " Total: ";
+                wsCosFiCapacitiv.Cells[$"B27"].Value = $"{Math.Round(suma, 2)} cos fi mediu lunar";
+                wsCosFiCapacitiv.Cells["A:AZ"].AutoFitColumns();
+
+                // Another SHEET REport
+                // EXCEL WORKSHEET FOR Ri+ Energii orare Facturare
+                ExcelWorksheet wsEnergyEnergiiFacturare = pck.Workbook.Worksheets.Add($"{report.An}.{report.Luna} Ri+ energii orare fact");
+                // Set Head of table header Style
+                wsEnergyEnergiiFacturare.Cells["A1:Z1"].Style.Font.Bold = true;
+                // Set Values of Table Header
+                wsEnergyEnergiiFacturare.Cells["A1"].Value = "Ora/ Zi";
+                for (int i = 1; i <= report.ZileInLuna; i++)
+                {
+                    wsEnergyEnergiiFacturare.Cells[$"{GetCharStringsFromNumber(65 + i)}1"].Value = i;
+                }
+
+                suma = 0;
+                // Set Values from report in excel file
+                for (int j = 0; j < 24; j++)
+                {
+                    wsEnergyEnergiiFacturare.Cells[$"A{j + 2}"].Value = j + 1;
+                    for (int i = 1; i <= report.ZileInLuna; i++)
+                    {
+                        wsEnergyEnergiiFacturare.Cells[$"{GetCharStringsFromNumber(65 + i)}{j + 2}"].Value = report.TabeleValori[5].Valori[i, j];
+                        suma += report.TabeleValori[5].Valori[i, j];
+                    }
+
+                    wsEnergyEnergiiFacturare.Cells[$"A{j + 3}"].Value = " Total: ";
+                    wsEnergyEnergiiFacturare.Cells[$"B{j + 3}"].Value = $"{suma} kVArh";
+                }
+
+                wsEnergyEnergiiFacturare.Cells["A:AZ"].AutoFitColumns();
+
+                // Final part Excel File
+                pck.Save();
+            }
+            stream.Position = 0;
+            string excelName = $"{report.An}.{report.Luna}_RaportEnergy.xlsx";
+
+            return controler.File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", excelName);
+
+        }
+
+        public string GetCharStringsFromNumber(int nr)
+        {
+            if (nr < 91) return Convert.ToChar(nr).ToString();
+
+            switch (nr)
+            {
+                case 91: return "AA";
+                case 92: return "AB";
+                case 93: return "AC";
+                case 94: return "AD";
+                case 95: return "AE";
+                case 96: return "AF";
+                default: break;
+            }
+            return "";
+        }
     }
 }
