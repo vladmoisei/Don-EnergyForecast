@@ -183,25 +183,22 @@ namespace MVCWithBlazor.Services
                     raport.TabeleValori[0].TotalperZi[i] += raport.TabeleValori[0].Valori[i, j];
                     raport.TabeleValori[1].TotalperZi[i] += raport.TabeleValori[1].Valori[i, j];
                     raport.TabeleValori[2].TotalperZi[i] += raport.TabeleValori[2].Valori[i, j];
-                    raport.TabeleValori[3].TotalperZi[i] += raport.TabeleValori[3].Valori[i, j];
-                    raport.TabeleValori[4].TotalperZi[i] += raport.TabeleValori[4].Valori[i, j];
                     raport.TabeleValori[5].TotalperZi[i] += raport.TabeleValori[5].Valori[i, j];
                 }
 
-                // For cos Fi afisam media aritmetica
-                raport.TabeleValori[3].TotalperZi[i] = Math.Round(raport.TabeleValori[3].TotalperZi[i] / 24, 2);
-                raport.TabeleValori[4].TotalperZi[i] = Math.Round(raport.TabeleValori[4].TotalperZi[i] / 24, 2);
+                // For cos Fi Total for each day
+                raport.TabeleValori[3].TotalperZi[i] = GetCalculateValueCosFiInductiv(new IndexModel { ValueEnergyPlusA = raport.TabeleValori[0].TotalperZi[i], ValueEnergyPlusRi = raport.TabeleValori[1].TotalperZi[i] });
+                raport.TabeleValori[4].TotalperZi[i] = GetCalculateValueCosFiCapacitiv(new IndexModel { ValueEnergyPlusA = raport.TabeleValori[0].TotalperZi[i], ValueEnergyMinusRc = raport.TabeleValori[2].TotalperZi[i] });
 
                 raport.TabeleValori[0].TotalperLuna += raport.TabeleValori[0].TotalperZi[i];
                 raport.TabeleValori[1].TotalperLuna += raport.TabeleValori[1].TotalperZi[i];
                 raport.TabeleValori[2].TotalperLuna += raport.TabeleValori[2].TotalperZi[i];
-                raport.TabeleValori[3].TotalperLuna += raport.TabeleValori[3].TotalperZi[i];
-                raport.TabeleValori[4].TotalperLuna += raport.TabeleValori[4].TotalperZi[i];
                 raport.TabeleValori[5].TotalperLuna += raport.TabeleValori[5].TotalperZi[i];
             }
-            // For cos Fi afisam media aritmetica
-            raport.TabeleValori[3].TotalperLuna = raport.TabeleValori[3].TotalperLuna / raport.ZileInLuna;
-            raport.TabeleValori[4].TotalperLuna = raport.TabeleValori[4].TotalperLuna / raport.ZileInLuna;
+            // For cos Fi afisam total per motnh
+            raport.TabeleValori[3].TotalperLuna = GetCalculateValueCosFiInductiv(new IndexModel { ValueEnergyPlusA = raport.TabeleValori[0].TotalperLuna, ValueEnergyPlusRi = raport.TabeleValori[1].TotalperLuna });
+            raport.TabeleValori[4].TotalperLuna = GetCalculateValueCosFiCapacitiv(new IndexModel { ValueEnergyPlusA = raport.TabeleValori[0].TotalperLuna, ValueEnergyMinusRc = raport.TabeleValori[2].TotalperLuna });
+
             return raport;
         }
 
@@ -251,7 +248,7 @@ namespace MVCWithBlazor.Services
                 // EXCEL WORKSHEET FOR A+ Energii orare
                 ExcelWorksheet wsEnergyPlusA = pck.Workbook.Worksheets.Add($"{report.An}.{report.Luna} A+ energii orare");
                 // Set Head of table header Style
-                wsEnergyPlusA.Cells["A1:Z1"].Style.Font.Bold = true;
+                wsEnergyPlusA.Cells["A1:AG1"].Style.Font.Bold = true;
                 // Set Values of Table Header
                 wsEnergyPlusA.Cells["A1"].Value = "Ora/ Zi";
                 for (int i = 1; i <= report.ZileInLuna; i++)
@@ -259,21 +256,24 @@ namespace MVCWithBlazor.Services
                     wsEnergyPlusA.Cells[$"{GetCharStringsFromNumber(65 + i)}1"].Value = i;
                 }
 
-                double suma = 0;
                 // Set Values from report in excel file
                 for (int j = 0; j < 24; j++)
                 {
+                    wsEnergyPlusA.Cells[$"A{j + 2}"].Style.Font.Bold = true;
                     wsEnergyPlusA.Cells[$"A{j + 2}"].Value = j + 1;
                     for (int i = 1; i <= report.ZileInLuna; i++)
                     {
                         wsEnergyPlusA.Cells[$"{GetCharStringsFromNumber(65 + i)}{j + 2}"].Value = report.TabeleValori[0].Valori[i, j];
-                        suma += report.TabeleValori[0].Valori[i, j];
                     }
-
-
-                    wsEnergyPlusA.Cells[$"A{j + 3}"].Value = " Total: ";
-                    wsEnergyPlusA.Cells[$"B{j + 3}"].Value = $"{suma} kWh";
                 }
+                // Show Values per each day of mounth
+                wsEnergyPlusA.Cells[$"A{27}"].Value = " Total: ";
+                for (int i = 1; i <= (report.ZileInLuna); i++)
+                {
+                    wsEnergyPlusA.Cells[$"{GetCharStringsFromNumber(65 + i)}27"].Value = report.TabeleValori[0].TotalperZi[i];
+                }
+                wsEnergyPlusA.Cells[$"A27:AG27"].Style.Font.Bold = true;
+                wsEnergyPlusA.Cells[$"{GetCharStringsFromNumber(66 + report.ZileInLuna)}27"].Value = $"{report.TabeleValori[0].TotalperLuna} kWh";
 
                 wsEnergyPlusA.Cells["A:AZ"].AutoFitColumns();
 
@@ -281,7 +281,7 @@ namespace MVCWithBlazor.Services
                 // EXCEL WORKSHEET FOR Ri+ Energii orare
                 ExcelWorksheet wsEnergyPlusRi = pck.Workbook.Worksheets.Add($"{report.An}.{report.Luna} Ri+ energii orare");
                 // Set Head of table header Style
-                wsEnergyPlusRi.Cells["A1:Z1"].Style.Font.Bold = true;
+                wsEnergyPlusRi.Cells["A1:AG1"].Style.Font.Bold = true;
                 // Set Values of Table Header
                 wsEnergyPlusRi.Cells["A1"].Value = "Ora/ Zi";
                 for (int i = 1; i <= report.ZileInLuna; i++)
@@ -289,20 +289,24 @@ namespace MVCWithBlazor.Services
                     wsEnergyPlusRi.Cells[$"{GetCharStringsFromNumber(65 + i)}1"].Value = i;
                 }
 
-                suma = 0;
                 // Set Values from report in excel file
                 for (int j = 0; j < 24; j++)
                 {
+                    wsEnergyPlusRi.Cells[$"A{j + 2}"].Style.Font.Bold = true;
                     wsEnergyPlusRi.Cells[$"A{j + 2}"].Value = j + 1;
                     for (int i = 1; i <= report.ZileInLuna; i++)
                     {
                         wsEnergyPlusRi.Cells[$"{GetCharStringsFromNumber(65 + i)}{j + 2}"].Value = report.TabeleValori[1].Valori[i, j];
-                        suma += report.TabeleValori[1].Valori[i, j];
                     }
-
-                    wsEnergyPlusRi.Cells[$"A{j + 3}"].Value = " Total: ";
-                    wsEnergyPlusRi.Cells[$"B{j + 3}"].Value = $"{suma} kVArh";
                 }
+                // Show Values per each day of mounth
+                wsEnergyPlusRi.Cells[$"A{27}"].Value = " Total: ";
+                for (int i = 1; i <= (report.ZileInLuna); i++)
+                {
+                    wsEnergyPlusRi.Cells[$"{GetCharStringsFromNumber(65 + i)}27"].Value = report.TabeleValori[1].TotalperZi[i];
+                }
+                wsEnergyPlusRi.Cells[$"A27:AG27"].Style.Font.Bold = true;
+                wsEnergyPlusRi.Cells[$"{GetCharStringsFromNumber(66 + report.ZileInLuna)}27"].Value = $"{report.TabeleValori[1].TotalperLuna} kVArh";
 
                 wsEnergyPlusRi.Cells["A:AZ"].AutoFitColumns();
 
@@ -310,7 +314,7 @@ namespace MVCWithBlazor.Services
                 // EXCEL WORKSHEET FOR Rc- Energii orare
                 ExcelWorksheet wsEnergyMinusRc = pck.Workbook.Worksheets.Add($"{report.An}.{report.Luna} Rc- energii orare");
                 // Set Head of table header Style
-                wsEnergyMinusRc.Cells["A1:Z1"].Style.Font.Bold = true;
+                wsEnergyMinusRc.Cells["A1:AG1"].Style.Font.Bold = true;
                 // Set Values of Table Header
                 wsEnergyMinusRc.Cells["A1"].Value = "Ora/ Zi";
                 for (int i = 1; i <= report.ZileInLuna; i++)
@@ -318,20 +322,24 @@ namespace MVCWithBlazor.Services
                     wsEnergyMinusRc.Cells[$"{GetCharStringsFromNumber(65 + i)}1"].Value = i;
                 }
 
-                suma = 0;
                 // Set Values from report in excel file
                 for (int j = 0; j < 24; j++)
                 {
+                    wsEnergyMinusRc.Cells[$"A{j + 2}"].Style.Font.Bold = true;
                     wsEnergyMinusRc.Cells[$"A{j + 2}"].Value = j + 1;
                     for (int i = 1; i <= report.ZileInLuna; i++)
                     {
                         wsEnergyMinusRc.Cells[$"{GetCharStringsFromNumber(65 + i)}{j + 2}"].Value = report.TabeleValori[2].Valori[i, j];
-                        suma += report.TabeleValori[2].Valori[i, j];
                     }
-
-                    wsEnergyMinusRc.Cells[$"A{j + 3}"].Value = " Total: ";
-                    wsEnergyMinusRc.Cells[$"B{j + 3}"].Value = $"{suma} kVArh";
                 }
+                // Show Values per each day of mounth
+                wsEnergyMinusRc.Cells[$"A{27}"].Value = " Total: ";
+                for (int i = 1; i <= (report.ZileInLuna); i++)
+                {
+                    wsEnergyMinusRc.Cells[$"{GetCharStringsFromNumber(65 + i)}27"].Value = report.TabeleValori[2].TotalperZi[i];
+                }
+                wsEnergyMinusRc.Cells[$"A27:AG27"].Style.Font.Bold = true;
+                wsEnergyMinusRc.Cells[$"{GetCharStringsFromNumber(66 + report.ZileInLuna)}27"].Value = $"{report.TabeleValori[2].TotalperLuna} kVArh";
 
                 wsEnergyMinusRc.Cells["A:AZ"].AutoFitColumns();
 
@@ -339,7 +347,7 @@ namespace MVCWithBlazor.Services
                 // EXCEL WORKSHEET FOR Cos Fi Inductiv Energii orare
                 ExcelWorksheet wsCosFiInductiv = pck.Workbook.Worksheets.Add($"{report.An}.{report.Luna} Cos Fi inductiv");
                 // Set Head of table header Style
-                wsCosFiInductiv.Cells["A1:Z1"].Style.Font.Bold = true;
+                wsCosFiInductiv.Cells["A1:AG1"].Style.Font.Bold = true;
                 // Set Values of Table Header
                 wsCosFiInductiv.Cells["A1"].Value = "Ora/ Zi";
                 for (int i = 1; i <= report.ZileInLuna; i++)
@@ -347,28 +355,32 @@ namespace MVCWithBlazor.Services
                     wsCosFiInductiv.Cells[$"{GetCharStringsFromNumber(65 + i)}1"].Value = i;
                 }
 
-                suma = 0;
                 // Set Values from report in excel file
                 for (int j = 0; j < 24; j++)
                 {
+                    wsCosFiInductiv.Cells[$"A{j + 2}"].Style.Font.Bold = true;
                     wsCosFiInductiv.Cells[$"A{j + 2}"].Value = j + 1;
                     for (int i = 1; i <= report.ZileInLuna; i++)
                     {
                         wsCosFiInductiv.Cells[$"{GetCharStringsFromNumber(65 + i)}{j + 2}"].Value = report.TabeleValori[3].Valori[i, j];
-                        suma += report.TabeleValori[3].Valori[i, j];
                     }
                 }
+                // Show Values per each day of mounth
+                wsCosFiInductiv.Cells[$"A{27}"].Value = " Total: ";
+                for (int i = 1; i <= (report.ZileInLuna); i++)
+                {
+                    wsCosFiInductiv.Cells[$"{GetCharStringsFromNumber(65 + i)}27"].Value = report.TabeleValori[3].TotalperZi[i];
+                }
+                wsCosFiInductiv.Cells[$"A27:AG27"].Style.Font.Bold = true;
+                wsCosFiInductiv.Cells[$"{GetCharStringsFromNumber(66 + report.ZileInLuna)}27"].Value = $"{report.TabeleValori[3].TotalperLuna}";
 
-                suma /= (24 * report.ZileInLuna);
-                wsCosFiInductiv.Cells[$"A27"].Value = " Total: ";
-                wsCosFiInductiv.Cells[$"B27"].Value = $"{Math.Round(suma, 2)} cos fi mediu lunar";
                 wsCosFiInductiv.Cells["A:AZ"].AutoFitColumns();
 
                 // Another SHEET REport
                 // EXCEL WORKSHEET FOR Cos Fi Capacitiv Energii orare
                 ExcelWorksheet wsCosFiCapacitiv = pck.Workbook.Worksheets.Add($"{report.An}.{report.Luna} Cos Fi capacitiv");
                 // Set Head of table header Style
-                wsCosFiCapacitiv.Cells["A1:Z1"].Style.Font.Bold = true;
+                wsCosFiCapacitiv.Cells["A1:AG1"].Style.Font.Bold = true;
                 // Set Values of Table Header
                 wsCosFiCapacitiv.Cells["A1"].Value = "Ora/ Zi";
                 for (int i = 1; i <= report.ZileInLuna; i++)
@@ -376,28 +388,33 @@ namespace MVCWithBlazor.Services
                     wsCosFiCapacitiv.Cells[$"{GetCharStringsFromNumber(65 + i)}1"].Value = i;
                 }
 
-                suma = 0;
                 // Set Values from report in excel file
                 for (int j = 0; j < 24; j++)
                 {
+                    wsCosFiCapacitiv.Cells[$"A{j + 2}"].Style.Font.Bold = true;
                     wsCosFiCapacitiv.Cells[$"A{j + 2}"].Value = j + 1;
                     for (int i = 1; i <= report.ZileInLuna; i++)
                     {
                         wsCosFiCapacitiv.Cells[$"{GetCharStringsFromNumber(65 + i)}{j + 2}"].Value = report.TabeleValori[4].Valori[i, j];
-                        suma += report.TabeleValori[4].Valori[i, j];
                     }
                 }
 
-                suma /= (24 * report.ZileInLuna);
-                wsCosFiCapacitiv.Cells[$"A27"].Value = " Total: ";
-                wsCosFiCapacitiv.Cells[$"B27"].Value = $"{Math.Round(suma, 2)} cos fi mediu lunar";
+                // Show Values per each day of mounth
+                wsCosFiCapacitiv.Cells[$"A{27}"].Value = " Total: ";
+                for (int i = 1; i <= (report.ZileInLuna); i++)
+                {
+                    wsCosFiCapacitiv.Cells[$"{GetCharStringsFromNumber(65 + i)}27"].Value = report.TabeleValori[4].TotalperZi[i];
+                }
+                wsCosFiCapacitiv.Cells[$"A27:AG27"].Style.Font.Bold = true;
+                wsCosFiCapacitiv.Cells[$"{GetCharStringsFromNumber(66 + report.ZileInLuna)}27"].Value = $"{report.TabeleValori[4].TotalperLuna}";
+
                 wsCosFiCapacitiv.Cells["A:AZ"].AutoFitColumns();
 
                 // Another SHEET REport
                 // EXCEL WORKSHEET FOR Ri+ Energii orare Facturare
                 ExcelWorksheet wsEnergyEnergiiFacturare = pck.Workbook.Worksheets.Add($"{report.An}.{report.Luna} Ri+ energii orare fact");
                 // Set Head of table header Style
-                wsEnergyEnergiiFacturare.Cells["A1:Z1"].Style.Font.Bold = true;
+                wsEnergyEnergiiFacturare.Cells["A1:AG1"].Style.Font.Bold = true;
                 // Set Values of Table Header
                 wsEnergyEnergiiFacturare.Cells["A1"].Value = "Ora/ Zi";
                 for (int i = 1; i <= report.ZileInLuna; i++)
@@ -405,20 +422,25 @@ namespace MVCWithBlazor.Services
                     wsEnergyEnergiiFacturare.Cells[$"{GetCharStringsFromNumber(65 + i)}1"].Value = i;
                 }
 
-                suma = 0;
                 // Set Values from report in excel file
                 for (int j = 0; j < 24; j++)
                 {
+                    wsEnergyEnergiiFacturare.Cells[$"A{j + 2}"].Style.Font.Bold = true;
                     wsEnergyEnergiiFacturare.Cells[$"A{j + 2}"].Value = j + 1;
                     for (int i = 1; i <= report.ZileInLuna; i++)
                     {
                         wsEnergyEnergiiFacturare.Cells[$"{GetCharStringsFromNumber(65 + i)}{j + 2}"].Value = report.TabeleValori[5].Valori[i, j];
-                        suma += report.TabeleValori[5].Valori[i, j];
                     }
-
-                    wsEnergyEnergiiFacturare.Cells[$"A{j + 3}"].Value = " Total: ";
-                    wsEnergyEnergiiFacturare.Cells[$"B{j + 3}"].Value = $"{suma} kVArh";
                 }
+
+                // Show Values per each day of mounth
+                wsEnergyEnergiiFacturare.Cells[$"A{27}"].Value = " Total: ";
+                for (int i = 1; i <= (report.ZileInLuna); i++)
+                {
+                    wsEnergyEnergiiFacturare.Cells[$"{GetCharStringsFromNumber(65 + i)}27"].Value = report.TabeleValori[5].TotalperZi[i];
+                }
+                wsEnergyEnergiiFacturare.Cells[$"A27:AG27"].Style.Font.Bold = true;
+                wsEnergyEnergiiFacturare.Cells[$"{GetCharStringsFromNumber(66 + report.ZileInLuna)}27"].Value = $"{report.TabeleValori[5].TotalperLuna} kVArh";
 
                 wsEnergyEnergiiFacturare.Cells["A:AZ"].AutoFitColumns();
 
@@ -444,6 +466,7 @@ namespace MVCWithBlazor.Services
                 case 94: return "AD";
                 case 95: return "AE";
                 case 96: return "AF";
+                case 97: return "AG";
                 default: break;
             }
             return "";

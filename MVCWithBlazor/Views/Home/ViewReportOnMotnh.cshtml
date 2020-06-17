@@ -4,7 +4,7 @@
     ViewData["Title"] = "Selectie luna vizualizare date";
 }
 
-<h1>ViewReportOnMotnh</h1>
+<h3>Selecteaza data</h3>
 
 <div class="row">
     <form class="col-md-6" method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="ViewReportOnMotnh">
@@ -55,7 +55,6 @@
 </ul>
 <div class="tab-content" id="myTabContent">
     <div class="tab-pane fade show active" id="energyPlusA" role="tabpanel" aria-labelledby="energyPlusA-tab">
-        <h2>@Model.TabeleValori[0].Denumire</h2>
         <table class="table table-bordered">
             <thead>
                 <tr>
@@ -95,7 +94,6 @@
         </table>
     </div>
     <div class="tab-pane fade" id="energyPlusRi" role="tabpanel" aria-labelledby="energyPlusRi-tab">
-        <h2>@Model.TabeleValori[1].Denumire</h2>
         <table class="table table-bordered">
             <thead>
                 <tr>
@@ -135,7 +133,6 @@
         </table>
     </div>
     <div class="tab-pane fade" id="energyMinusRc" role="tabpanel" aria-labelledby="energyMinusRc-tab">
-        <h2>@Model.TabeleValori[2].Denumire</h2>
         <table class="table table-bordered">
             <thead>
                 <tr>
@@ -175,7 +172,6 @@
         </table>
     </div>
     <div class="tab-pane fade" id="cosFiInductiv" role="tabpanel" aria-labelledby="cosFiInductiv-tab">
-        <h2>@Model.TabeleValori[3].Denumire</h2>
         <table class="table table-bordered">
             <thead>
                 <tr>
@@ -216,7 +212,6 @@
         </table>
     </div>
     <div class="tab-pane fade" id="cosFiCapacitiv" role="tabpanel" aria-labelledby="cosFiCapacitiv-tab">
-        <h2>@Model.TabeleValori[4].Denumire</h2>
         <table class="table table-bordered">
             <thead>
                 <tr>
@@ -256,7 +251,6 @@
         </table>
     </div>
     <div class="tab-pane fade" id="RiPlusEnergiiOrare" role="tabpanel" aria-labelledby="RiPlusEnergiiOrare-tab">
-        <h2>@Model.TabeleValori[5].Denumire</h2>
         <table class="table table-bordered">
             <thead>
                 <tr>
