@@ -34,22 +34,16 @@ namespace MVCWithBlazor.Controllers
         public IActionResult Indexes()
         {
             // Show Indexes between fisrt and last of current Month
-            var startDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
-            var endDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month + 1, 1);
-            ViewBag.start = startDate;
-            ViewBag.end = endDate;
-
-            List<IndexModel> lista = _context.Indexes.Where(elem => elem.DataOra >= startDate && elem.DataOra <= endDate).ToList();
+            ViewBag.Data = DateTime.Now;
+            List<IndexModel> lista = _context.Indexes.Where(elem => elem.DataOra.Month == DateTime.Now.Month).ToList();
             return View(lista);
         }
         [HttpPost]
-        public IActionResult Indexes(DateTime daterangepicker, string startDate, string endDate)
+        public IActionResult Indexes(string datepicker)
         {
-            DateTime StartDate = Convert.ToDateTime(startDate.Substring(0, 15));
-            DateTime EndDate = Convert.ToDateTime(endDate.Substring(0, 15));
-            ViewBag.start = StartDate;
-            ViewBag.end = EndDate;
-            List<IndexModel> lista = _context.Indexes.Where(elem => elem.DataOra >= StartDate && elem.DataOra <= EndDate).ToList();
+            DateTime data = Convert.ToDateTime(datepicker);
+            ViewBag.Data = data;
+            List<IndexModel> lista = _context.Indexes.Where(elem => elem.DataOra.Month == data.Month).ToList();
             return View(lista);
         }
 

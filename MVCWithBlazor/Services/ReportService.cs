@@ -205,7 +205,7 @@ namespace MVCWithBlazor.Services
         // Get Excel File From Report
         public FileStreamResult GetExcelFileFromReport(List<IndexModel> listOfIndexes, ReportMonthViewModel report)
         {
-            var controler = new ProbaController();
+            var controler = new ProbaController(); // Initialize new controller to use File Method for Excel File
             var stream = new MemoryStream();
 
             using (var pck = new ExcelPackage(stream))
