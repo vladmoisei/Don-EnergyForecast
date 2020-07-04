@@ -93,6 +93,29 @@ namespace MVCWithBlazor.Controllers
             return RedirectToAction("Indexes", "Home");
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult UploadPrognozaFromFile(List<IFormFile> files)
+        {
+            // Verificam daca lista de fisiera incarcata  are 0 elemente si returnam msj
+            if (files.Count == 0)
+            {
+                ViewBag.Mesaj2 = "Fisierul nu s-a incarcat";
+                return View();
+            }
+
+            // Cream fisier din primul lelement din lista de fisiere
+            IFormFile formFile = files[0];
+            // Verificam daca fisierul are extensia .xlsx
+            if (!formFile.FileName.EndsWith(".xlsx"))
+            {
+                ViewBag.Hidden = "";
+                ViewBag.Mesaj2 = "Fisierul nu are extensia .xlsx!";
+                return RedirectToAction("UploadDataFromFile", "Home");
+            }
+            // Redirection la Month Forecast
+            return RedirectToAction("UploadDataFromFile", "Home"); // TO DO
+        } 
         public IActionResult ViewReportOnMotnh()
         {
             ViewBag.Data = DateTime.Now;
