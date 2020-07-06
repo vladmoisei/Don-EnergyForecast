@@ -31,6 +31,7 @@ namespace MVCWithBlazor.Controllers
             return View();
         }
 
+        // Index Consumtion
         public IActionResult Indexes()
         {
             // Show Indexes between fisrt and last of current Month
@@ -44,6 +45,23 @@ namespace MVCWithBlazor.Controllers
             DateTime data = Convert.ToDateTime(datepicker);
             ViewBag.Data = data;
             List<IndexModel> lista = _context.Indexes.Where(elem => elem.DataOra.Month == data.Month).ToList();
+            return View(lista);
+        }
+
+        // Index Forecast
+        public IActionResult IndexePrognoza()
+        {
+            // Show Indexes between fisrt and last of current Month
+            ViewBag.Data = DateTime.Now;
+            List<PrognozaEnergieModel> lista = _context.PrognozaEnergieModels.Where(elem => elem.DataOra.Month == DateTime.Now.Month).ToList();
+            return View(lista);
+        }
+        [HttpPost]
+        public IActionResult IndexePrognoza(string datepicker)
+        {
+            DateTime data = Convert.ToDateTime(datepicker);
+            ViewBag.Data = data;
+            List<PrognozaEnergieModel> lista = _context.PrognozaEnergieModels.Where(elem => elem.DataOra.Month == data.Month).ToList();
             return View(lista);
         }
 
@@ -114,7 +132,7 @@ namespace MVCWithBlazor.Controllers
                 return RedirectToAction("UploadDataFromFile", "Home");
             }
             // Redirection la Month Forecast
-            return RedirectToAction("UploadDataFromFile", "Home"); // TO DO
+            return RedirectToAction("IndexePrognoza", "Home"); // TO DO
         } 
         public IActionResult ViewReportOnMotnh()
         {

@@ -1,0 +1,75 @@
+﻿@model IEnumerable<MVCWithBlazor.Models.PrognozaEnergieModel>
+
+@{
+    ViewData["Title"] = "Index Prognozat";
+}
+
+<h1>Indexes</h1>
+@using Syncfusion.EJ2
+
+<div class="row">
+    <form class="col-md-6" method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="IndexePrognoza">
+        <div class="form-group">
+            <div class=" control-section">
+                <div id="wrapper" class="datepicker-section">
+                    <div id="datepicker-control">
+                        <ejs-datepicker id="datepicker" value=ViewBag.Data format="MMMM y" start="Year" depth="Year"></ejs-datepicker>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-10">
+                <input type="submit" value="Show data" />
+            </div>
+        </div>
+    </form>
+    <span class="validation-summary-errors">@ViewBag.Mesaj</span>
+</div>
+
+<p>
+    <a asp-action="UploadDataFromFile">Upload new data from file</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.PrognozaEnergieModelID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DataOra)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Ora)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Valoare)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class=@(item.DataOra.Hour==0?"background__galben":"")>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PrognozaEnergieModelID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DataOra)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Ora)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Valoare)
+                </td>
+                @*<td>
+                        @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                        @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                        @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                    </td>*@
+            </tr>
+        }
+    </tbody>
+</table>
