@@ -17,8 +17,68 @@ namespace MVCWithBlazor.Services
 {
     public class ReportService
     {
+        // Get ReportMonthValoriViewModel For Forecast Index View by selected Month
+        public ReportMonthValoriViewModel GetMonthValoriPrognozaFromList(List<PrognozaEnergieModel> lista, int zleInLuna)
+        {
+            // TODO
+            ReportMonthValoriViewModel valoriPeLuna = new ReportMonthValoriViewModel() { Valori = new double[zleInLuna + 1, 24], TotalperZi = new double[zleInLuna + 1]};
+            for (int i = 1; i <= zleInLuna; i++)
+            {
+                for (int j = 0; j < 24; j++)
+                {
+                    //raport.TabeleValori[0].Valori[i, j]
+                    var variabila = lista.Where(elem =>
+                        elem.DataOra.Day == i &&
+                        elem.DataOra.Hour == j
+                    ).Select(x => x.Valoare
+                    ).FirstOrDefault();
+                    if (variabila == null) continue;
+                    valoriPeLuna.Valori[i, j] = variabila;
+                }
+                for (int j = 0; j < 24; j++)
+                {
+                    valoriPeLuna.TotalperZi[i] += valoriPeLuna.Valori[i, j];
+                    valoriPeLuna.TotalperZi[i] = Math.Round(valoriPeLuna.TotalperZi[i], 1);
+                }
 
-        // Task returnare lista index contor gaz din fisier excel 
+                valoriPeLuna.TotalperLuna += valoriPeLuna.TotalperZi[i];
+                valoriPeLuna.TotalperLuna = Math.Round(valoriPeLuna.TotalperLuna);
+
+            }
+            return valoriPeLuna;
+        }
+        // Task returnare lista prognoza energie din fisier excel
+        public async Task<List<PrognozaEnergieModel>> GetPrognozaForMonthFromFileAsync(IFormFile formFile, DateTime data)
+        {
+            var list = new List<PrognozaEnergieModel>();
+
+            using (var stream = new MemoryStream())
+            {
+                await formFile.CopyToAsync(stream);
+
+                using (var package = new ExcelPackage(stream))
+                {
+                    ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
+                    var rowCount = worksheet.Dimension.Rows;
+
+                    for (int row = 4; row <= 27; row++)
+                    {
+                        for (int j = 0; j < DateTime.DaysInMonth(data.Year, data.Month); j++)
+                        {
+                            list.Add(new PrognozaEnergieModel
+                            {
+                                DataOra = new DateTime(data.Year, data.Month, j+1, row - 4, 0, 0),
+                                Ora = row - 3,
+                                Valoare = Convert.ToDouble(worksheet.Cells[row, j+2].Value.ToString().Trim())
+                            });
+                        }
+                    }
+                }
+            }
+
+            return list;
+        }
+        // Task returnare lista index consum energie din fisier excel 
         public async Task<List<IndexModel>> GetBlumsListFromExcelFileBySarjaAsync(IFormFile formFile)
         //public static List<Blum> GetBlumsListFromFileAsync(IFormFile formFile)
         {

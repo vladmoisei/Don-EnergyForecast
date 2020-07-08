@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MVCWithBlazor.Models.PrognozaEnergieModel>
+﻿@model MVCWithBlazor.Models.ReportMonthValoriViewModel
 
 @{
     ViewData["Title"] = "Index Prognozat";
@@ -30,46 +30,41 @@
 <p>
     <a asp-action="UploadDataFromFile">Upload new data from file</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.PrognozaEnergieModelID)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DataOra)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Ora)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Valoare)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr class=@(item.DataOra.Hour==0?"background__galben":"")>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PrognozaEnergieModelID)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DataOra)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Ora)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Valoare)
-                </td>
-                @*<td>
-                        @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                        @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                        @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-                    </td>*@
-            </tr>
-        }
-    </tbody>
-</table>
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">Ora/ Zi</th>
+                    @for (int i = 1; i <= ViewBag.ZileInLuna; i++)
+                    {
+                        <th scope="col">@i</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @for (int j = 0; j < 24; j++)
+                {
+                    <tr>
+                        <th>@(j + 1)</th>
+                        @for (int i = 1; i <= ViewBag.ZileInLuna; i++)
+                        {
+                            <td>
+                                @Model.Valori[i, j]
+                            </td>
+                        }
+                    </tr>
+                }
+                <tr>
+                    <th>Total: </th>
+                    @for (int i = 1; i <= ViewBag.ZileInLuna; i++)
+                    {
+                        <td>
+                            @Model.TotalperZi[i]
+                        </td>
+                    }
+                    <td>
+                        @Model.TotalperLuna kWh
+                    </td>
+                </tr>
+            </tbody>
+        </table>

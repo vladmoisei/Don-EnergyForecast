@@ -14,7 +14,7 @@ namespace MVCWithBlazor.Models
         [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy HH:mm}", ApplyFormatInEditMode = false)]
         public DateTime DataOra { get; set; }
         public int Ora { get; set; }
-        public float Valoare { get; set; }
+        public double Valoare { get; set; }
 
     }
 }

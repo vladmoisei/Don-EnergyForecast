@@ -24,6 +24,15 @@
     <div class="col-md-6">
         <form method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="UploadPrognozaFromFile">
             <div class="form-group">
+                <div class=" control-section">
+                    <div id="wrapper" class="datepicker-section">
+                        <div id="datepicker-control">
+                            <ejs-datepicker id="datepicker" value=ViewBag.Data format="MMMM y" start="Year" depth="Year"></ejs-datepicker>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
                 <div class="col-md-10">
                     <p>Incarca fisierul cu prognoza energie:</p>
                     <input type="file" class="e-css e-btn" name="files" multiple />

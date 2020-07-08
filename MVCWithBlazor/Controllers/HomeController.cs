@@ -34,7 +34,7 @@ namespace MVCWithBlazor.Controllers
         // Index Consumtion
         public IActionResult Indexes()
         {
-            // Show Indexes between fisrt and last of current Month
+            // Show Indexes between first and last of current Month
             ViewBag.Data = DateTime.Now;
             List<IndexModel> lista = _context.Indexes.Where(elem => elem.DataOra.Month == DateTime.Now.Month).ToList();
             return View(lista);
@@ -52,22 +52,30 @@ namespace MVCWithBlazor.Controllers
         public IActionResult IndexePrognoza()
         {
             // Show Indexes between fisrt and last of current Month
-            ViewBag.Data = DateTime.Now;
+            DateTime data = DateTime.Now;
+            ViewBag.Data = data;
+            int zileInLuna = DateTime.DaysInMonth(data.Year, data.Month);
+            ViewBag.ZileInLuna = zileInLuna;
             List<PrognozaEnergieModel> lista = _context.PrognozaEnergieModels.Where(elem => elem.DataOra.Month == DateTime.Now.Month).ToList();
-            return View(lista);
+            ReportMonthValoriViewModel reportMonthValoriViewModel = _reportService.GetMonthValoriPrognozaFromList(lista, zileInLuna);
+            return View(reportMonthValoriViewModel);
         }
         [HttpPost]
         public IActionResult IndexePrognoza(string datepicker)
         {
             DateTime data = Convert.ToDateTime(datepicker);
             ViewBag.Data = data;
+            int zileInLuna = DateTime.DaysInMonth(data.Year, data.Month);
+            ViewBag.ZileInLuna = zileInLuna;
             List<PrognozaEnergieModel> lista = _context.PrognozaEnergieModels.Where(elem => elem.DataOra.Month == data.Month).ToList();
-            return View(lista);
+            ReportMonthValoriViewModel reportMonthValoriViewModel = _reportService.GetMonthValoriPrognozaFromList(lista, zileInLuna);
+            return View(reportMonthValoriViewModel);
         }
 
         [HttpGet]
         public IActionResult UploadDataFromFile()
         {
+            ViewBag.Data = DateTime.Now;
             return View();
         }
 
@@ -113,13 +121,15 @@ namespace MVCWithBlazor.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult UploadPrognozaFromFile(List<IFormFile> files)
+        public async Task<IActionResult> UploadPrognozaFromFile(List<IFormFile> files, DateTime datepicker)
         {
+            DateTime data = Convert.ToDateTime(datepicker);
+            ViewBag.Data = data;
             // Verificam daca lista de fisiera incarcata  are 0 elemente si returnam msj
             if (files.Count == 0)
             {
                 ViewBag.Mesaj2 = "Fisierul nu s-a incarcat";
-                return View();
+                return RedirectToAction("UploadDataFromFile", "Home");
             }
 
             // Cream fisier din primul lelement din lista de fisiere
@@ -127,13 +137,27 @@ namespace MVCWithBlazor.Controllers
             // Verificam daca fisierul are extensia .xlsx
             if (!formFile.FileName.EndsWith(".xlsx"))
             {
-                ViewBag.Hidden = "";
-                ViewBag.Mesaj2 = "Fisierul nu are extensia .xlsx!";
-                return RedirectToAction("UploadDataFromFile", "Home");
+                    ViewBag.Hidden = "";
+                    ViewBag.Mesaj2 = "Fisierul nu are extensia .xlsx!";
+                    return RedirectToAction("UploadDataFromFile", "Home");
+
+            }
+
+            //Cream lista cu prognoza din fisier excel
+            List<PrognozaEnergieModel> lista = await _reportService.GetPrognozaForMonthFromFileAsync(formFile, data);
+
+            //Actualizam baza de date cu lista de blumuri din fisier
+            if (lista != null)
+            {
+                foreach (var item in lista)
+                {
+                    _context.Add(item);
+                    _context.SaveChanges();
+                }
             }
             // Redirection la Month Forecast
             return RedirectToAction("IndexePrognoza", "Home"); // TO DO
-        } 
+        }
         public IActionResult ViewReportOnMotnh()
         {
             ViewBag.Data = DateTime.Now;
