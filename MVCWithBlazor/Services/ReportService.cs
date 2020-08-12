@@ -214,12 +214,15 @@ namespace MVCWithBlazor.Services
                 for (int j = 0; j < 24; j++)
                 {
                     //raport.TabeleValori[0].Valori[i, j]
-                    var variabila = context.Indexes.Where(elem =>
+                    var variabile = context.Indexes.Where(elem =>
                         elem.DataOra.Year == data.Year &&
                         elem.DataOra.Month == data.Month &&
                         elem.DataOra.Day == i &&
                         elem.DataOra.Hour == j
-                    ).Select(x => new ElemSelectieModel
+                    ).ToList();
+                    if (variabile == null) continue;
+
+                    var variabila = variabile.Select(x => new ElemSelectieModel
                     {
                         EnergyPlusA = x.ValueEnergyPlusA,
                         EnergyPlusRi = x.ValueEnergyPlusRi,
