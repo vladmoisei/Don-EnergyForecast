@@ -26,7 +26,14 @@ namespace MVCWithBlazor.Controllers
             _reportService = reportService;
         }
 
+        [HttpGet]
         public IActionResult Index()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Index(string text)
         {
             return View();
         }
