@@ -20,7 +20,6 @@ namespace MVCWithBlazor.Services
         // Get ReportMonthValoriViewModel For Forecast Index View by selected Month
         public ReportMonthValoriViewModel GetMonthValoriPrognozaFromList(List<PrognozaEnergieModel> lista, int zleInLuna)
         {
-            // TODO
             ReportMonthValoriViewModel valoriPeLuna = new ReportMonthValoriViewModel() { Valori = new double[zleInLuna + 1, 24], TotalperZi = new double[zleInLuna + 1]};
             for (int i = 1; i <= zleInLuna; i++)
             {

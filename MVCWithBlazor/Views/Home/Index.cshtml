@@ -1,25 +1,48 @@
-﻿@using MVCWithBlazor.Components
+﻿@model MVCWithBlazor.Models.DailyViewModel
+@using MVCWithBlazor.Components
 @{
     ViewData["Title"] = "Home Page";
 }
 
-    <a class="btn btn-info" asp-action="UploadDataFromFile">Link "UploadDataFromFile"</a>
-    <a class="btn btn-info" asp-action="Indexes">Index</a>
-    <a class="btn btn-info" asp-action="IndexePrognoza">Index prognoza energie</a>
-    <a class="btn btn-info" asp-action="ViewReportOnMotnh">Selectie luna viziizare raport</a>
-
-    <div class="text-center">
-        <h1 class="display-4">Welcome to ASP.NET Core Identity Management </h1>
-        <div class="alert ">
-            <a class="btn btn-info" asp-action="member">Go to Member Area</a>
+<div class="row">
+    <form class="col-md-6" method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="Index">
+        <div class="form-group">
+            <div class="col-md-10">
+                <input id="startDate" name="startDate" type="date" class="form-control" value="@ViewBag.start" />
+            </div>
         </div>
-
-        <div class="alert">
-            <a class="btn btn-info" asp-action="admin">Go to Admin Area</a>
+        <div class="form-group">
+            <div class="col-md-10">
+                <input type="submit" value="Show data" />
+            </div>
         </div>
+    </form>
+    <span class="validation-summary-errors">@ViewBag.Mesaj</span>
+</div>
 
-        <component type="typeof(ComponentProba)" render-mode="ServerPrerendered" />
-        <div>
-            <ejs-calendar id="calendar"></ejs-calendar>
-        </div>
+<table>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.ListaConsumPerZi[0].)
+        </th>
+    </tr>
+    <tr>
+        <td>   </td>
+    </tr>
+</table>
+
+<div class="text-center">
+    <h1 class="display-4">Welcome to ASP.NET Core Identity Management </h1>
+    <div class="alert ">
+        <a class="btn btn-info" asp-action="member">Go to Member Area</a>
     </div>
+
+    <div class="alert">
+        <a class="btn btn-info" asp-action="admin">Go to Admin Area</a>
+    </div>
+
+    <component type="typeof(ComponentProba)" render-mode="ServerPrerendered" />
+    <div>
+        <ejs-calendar id="calendar"></ejs-calendar>
+    </div>
+</div>

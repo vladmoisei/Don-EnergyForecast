@@ -29,13 +29,34 @@ namespace MVCWithBlazor.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            return View();
+            DateTime data = DateTime.Now;
+            ViewBag.start = data.ToString("yyyy-MM-dd");
+            DailyViewModel dvm = new DailyViewModel
+            {
+                ListaConsumPerZi = _context.Indexes.Where(elem => elem.DataOra.Year == data.Year
+                                    && elem.DataOra.Month == data.Month 
+                                    && elem.DataOra.Day == data.Day).ToList(),
+                ListaPrognozaPerZi = _context.PrognozaEnergieModels.Where(elem => elem.DataOra.Year == data.Year
+                                    && elem.DataOra.Month == data.Month
+                                    && elem.DataOra.Day == data.Day).ToList()
+            };
+            return View(dvm);
         }
 
         [HttpPost]
-        public IActionResult Index(string text)
+        public IActionResult Index(DateTime startDate)
         {
-            return View();
+            ViewBag.start = startDate.ToString("yyyy-MM-dd");
+            DailyViewModel dvm = new DailyViewModel
+            {
+                ListaConsumPerZi = _context.Indexes.Where(elem => elem.DataOra.Year == startDate.Year
+                                    && elem.DataOra.Month == startDate.Month
+                                    && elem.DataOra.Day == startDate.Day).ToList(),
+                ListaPrognozaPerZi = _context.PrognozaEnergieModels.Where(elem => elem.DataOra.Year == startDate.Year
+                                    && elem.DataOra.Month == startDate.Month
+                                    && elem.DataOra.Day == startDate.Day).ToList()
+            };
+            return View(dvm);
         }
 
         // Index Consumtion
