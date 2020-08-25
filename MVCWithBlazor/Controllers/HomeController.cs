@@ -31,6 +31,7 @@ namespace MVCWithBlazor.Controllers
         {
             DateTime data = DateTime.Now;
             ViewBag.start = data.ToString("yyyy-MM-dd");
+
             DailyViewModel dvm = new DailyViewModel
             {
                 ListaConsumPerZi = _context.Indexes.Where(elem => elem.DataOra.Year == data.Year
@@ -40,6 +41,15 @@ namespace MVCWithBlazor.Controllers
                                     && elem.DataOra.Month == data.Month
                                     && elem.DataOra.Day == data.Day).ToList()
             };
+
+            List<AxisLabelData> chartData = new List<AxisLabelData>();
+
+            for (int i = 0; i < dvm.ListaPrognozaPerZi.Count; i++)
+            {
+                chartData.Add(new AxisLabelData { x = dvm.ListaPrognozaPerZi[i].Ora.ToString(), y = dvm.ListaPrognozaPerZi[i].Valoare, y1 = dvm.ListaConsumPerZi.Count > 0 ? dvm.ListaConsumPerZi[0].ValueEnergyPlusA / 1000: 0});
+            }
+            dvm.ChartData = chartData;
+            ViewBag.dataSource = chartData;
             return View(dvm);
         }
 
@@ -56,6 +66,15 @@ namespace MVCWithBlazor.Controllers
                                     && elem.DataOra.Month == startDate.Month
                                     && elem.DataOra.Day == startDate.Day).ToList()
             };
+
+            List<AxisLabelData> chartData = new List<AxisLabelData>();
+
+            for (int i = 0; i < dvm.ListaPrognozaPerZi.Count; i++)
+            {
+                chartData.Add(new AxisLabelData { x = dvm.ListaPrognozaPerZi[i].Ora.ToString(), y = dvm.ListaPrognozaPerZi[i].Valoare, y1 = dvm.ListaConsumPerZi.Count > 0 ? dvm.ListaConsumPerZi[0].ValueEnergyPlusA / 1000 : 0 });
+            }
+            dvm.ChartData = chartData;
+            ViewBag.dataSource = chartData;
             return View(dvm);
         }
 

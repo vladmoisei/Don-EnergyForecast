@@ -9,5 +9,6 @@ namespace MVCWithBlazor.Models
     {
         public List<IndexModel> ListaConsumPerZi { get; set; }
         public List<PrognozaEnergieModel> ListaPrognozaPerZi { get; set; }
+        public List<AxisLabelData> ChartData { get; set; }
     }
 }
