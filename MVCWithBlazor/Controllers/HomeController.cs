@@ -46,7 +46,7 @@ namespace MVCWithBlazor.Controllers
 
             for (int i = 0; i < dvm.ListaPrognozaPerZi.Count; i++)
             {
-                chartData.Add(new AxisLabelData { x = dvm.ListaPrognozaPerZi[i].Ora.ToString(), y = dvm.ListaPrognozaPerZi[i].Valoare, y1 = dvm.ListaConsumPerZi.Count > 0 ? dvm.ListaConsumPerZi[0].ValueEnergyPlusA / 1000: 0});
+                chartData.Add(new AxisLabelData { x = dvm.ListaPrognozaPerZi[i].Ora, y = dvm.ListaPrognozaPerZi[i].Valoare, y1 = dvm.ListaConsumPerZi.Count > 0 ? Math.Round(dvm.ListaConsumPerZi[i].ValueEnergyPlusA / 1000, 1): 0});
             }
             dvm.ChartData = chartData;
             ViewBag.dataSource = chartData;
@@ -71,7 +71,7 @@ namespace MVCWithBlazor.Controllers
 
             for (int i = 0; i < dvm.ListaPrognozaPerZi.Count; i++)
             {
-                chartData.Add(new AxisLabelData { x = dvm.ListaPrognozaPerZi[i].Ora.ToString(), y = dvm.ListaPrognozaPerZi[i].Valoare, y1 = dvm.ListaConsumPerZi.Count > 0 ? dvm.ListaConsumPerZi[0].ValueEnergyPlusA / 1000 : 0 });
+                chartData.Add(new AxisLabelData { x = dvm.ListaPrognozaPerZi[i].Ora, y = dvm.ListaPrognozaPerZi[i].Valoare, y1 = dvm.ListaConsumPerZi.Count > 0 ? Math.Round(dvm.ListaConsumPerZi[i].ValueEnergyPlusA / 1000, 1) : 0 });
             }
             dvm.ChartData = chartData;
             ViewBag.dataSource = chartData;

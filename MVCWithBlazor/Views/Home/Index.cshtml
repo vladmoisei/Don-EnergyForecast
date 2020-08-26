@@ -40,7 +40,7 @@
             <td class="text-black-100">Prognoza energie [MWh]</td>
             @for (int i = 0; i < Model.ListaPrognozaPerZi.Count; i++)
             {
-                <td>@Model.ListaPrognozaPerZi[0].Valoare</td>
+                <td><input style="width: 50px" type="number" value="@Model.ListaPrognozaPerZi[i].Valoare" /></td>
             }
         </tr>
         <tr>
@@ -53,14 +53,43 @@
     </tbody>
 </table>
 
-<ejs-chart id="container" title="Prognoza_Consum Realizat" width="100%">
+<ejs-chart id="container" load="window.onChartLoad" title="Grafic - Prognoza / Consum">
+    <e-chart-tooltipsettings enable="true">
+    </e-chart-tooltipsettings>
+    <e-chart-primaryxaxis valueType="Category"
+                          labelFormat="x"
+                          intervalType="Hours"
+                          edgeLabelPlacement="Shift">
+        <e-majorgridlines width="0"></e-majorgridlines>
+    </e-chart-primaryxaxis>
+    <e-chart-primaryyaxis labelFormat="{value}"
+                          rangePadding="None"
+                          minimum=0
+                          maximum=6
+                          interval=0.5>
+        <e-linestyle width="0"></e-linestyle>
+        <e-majorticklines width="0"></e-majorticklines>
+    </e-chart-primaryyaxis>
+    <e-chart-chartarea>
+        <e-chartarea-border width="0"></e-chartarea-border>
+    </e-chart-chartarea>
+    <e-series-collection>
+        <e-series dataSource="ViewBag.dataSource" name="Prognoza" xName="x" width="2" opacity="1" yName="y" type="@Syncfusion.EJ2.Charts.ChartSeriesType.Line">
+            <e-series-marker visible="true" height="10" width="10"></e-series-marker>
+        </e-series>
+        <e-series dataSource="ViewBag.dataSource" name="Consum" xName="x" width="2" opacity="1" yName="y1" type="@Syncfusion.EJ2.Charts.ChartSeriesType.Line">
+            <e-series-marker visible="true" height="10" width="10"></e-series-marker>
+        </e-series>
+    </e-series-collection>
+</ejs-chart>
+@*<ejs-chart id="container" title="Prognoza_Consum Realizat" width="100%">
     <e-chart-primaryxaxis valueType="Category">
     </e-chart-primaryxaxis>
     <e-series-collection>
         <e-series dataSource="ViewBag.dataSource" xName="x" yName="y" type="@Syncfusion.EJ2.Charts.ChartSeriesType.StepLine"></e-series>
         <e-series dataSource="ViewBag.dataSource" xName="x" yName="y1" type="@Syncfusion.EJ2.Charts.ChartSeriesType.StepLine"></e-series>
     </e-series-collection>
-</ejs-chart>
+</ejs-chart>*@
 
 <div class="text-center">
     <h1 class="display-4">Welcome to ASP.NET Core Identity Management </h1>

@@ -7,7 +7,7 @@ namespace MVCWithBlazor.Models
 {
     public class AxisLabelData
     {
-        public string x;
+        public int x;
         public double y;
         public double y1;
     }
