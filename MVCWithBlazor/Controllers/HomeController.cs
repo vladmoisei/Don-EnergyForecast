@@ -54,7 +54,7 @@ namespace MVCWithBlazor.Controllers
         }
 
         [HttpPost]
-        public IActionResult Index(DateTime startDate)
+        public IActionResult Index(DateTime startDate, string submitBtn, double val1, double val2, double val3, double val4, double val5, double val6, double val7, double val8, double val9, double val10, double val11, double val12, double val13, double val14, double val15, double val16, double val17, double val18, double val19, double val20, double val21, double val22, double val23, double val24)
         {
             ViewBag.start = startDate.ToString("yyyy-MM-dd");
             DailyViewModel dvm = new DailyViewModel
@@ -72,7 +72,90 @@ namespace MVCWithBlazor.Controllers
             for (int i = 0; i < dvm.ListaPrognozaPerZi.Count; i++)
             {
                 chartData.Add(new AxisLabelData { x = dvm.ListaPrognozaPerZi[i].Ora, y = dvm.ListaPrognozaPerZi[i].Valoare, y1 = dvm.ListaConsumPerZi.Count > 0 ? Math.Round(dvm.ListaConsumPerZi[i].ValueEnergyPlusA / 1000, 1) : 0 });
+                
+                // Update Elements in Database
+                if (submitBtn == "Save data")
+                {
+                    switch (i)
+                    {
+                        case 0: dvm.ListaPrognozaPerZi[i].Valoare = val1;
+                            break;
+                        case 1:
+                            dvm.ListaPrognozaPerZi[i].Valoare = val2;
+                            break;
+                        case 2:
+                            dvm.ListaPrognozaPerZi[i].Valoare = val3;
+                            break;
+                        case 3:
+                            dvm.ListaPrognozaPerZi[i].Valoare = val4;
+                            break;
+                        case 4:
+                            dvm.ListaPrognozaPerZi[i].Valoare = val5;
+                            break;
+                        case 5:
+                            dvm.ListaPrognozaPerZi[i].Valoare = val6;
+                            break;
+                        case 6:
+                            dvm.ListaPrognozaPerZi[i].Valoare = val7;
+                            break;
+                        case 7:
+                            dvm.ListaPrognozaPerZi[i].Valoare = val8;
+                            break;
+                        case 8:
+                            dvm.ListaPrognozaPerZi[i].Valoare = val9;
+                            break;
+                        case 9:
+                            dvm.ListaPrognozaPerZi[i].Valoare = val10;
+                            break;
+                        case 10:
+                            dvm.ListaPrognozaPerZi[i].Valoare = val11;
+                            break;
+                        case 11:
+                            dvm.ListaPrognozaPerZi[i].Valoare = val12;
+                            break;
+                        case 12:
+                            dvm.ListaPrognozaPerZi[i].Valoare = val13;
+                            break;
+                        case 13:
+                            dvm.ListaPrognozaPerZi[i].Valoare = val14;
+                            break;
+                        case 14:
+                            dvm.ListaPrognozaPerZi[i].Valoare = val15;
+                            break;
+                        case 15:
+                            dvm.ListaPrognozaPerZi[i].Valoare = val16;
+                            break;
+                        case 16:
+                            dvm.ListaPrognozaPerZi[i].Valoare = val17;
+                            break;
+                        case 17:
+                            dvm.ListaPrognozaPerZi[i].Valoare = val18;
+                            break;
+                        case 18:
+                            dvm.ListaPrognozaPerZi[i].Valoare = val19;
+                            break;
+                        case 19:
+                            dvm.ListaPrognozaPerZi[i].Valoare = val20;
+                            break;
+                        case 20:
+                            dvm.ListaPrognozaPerZi[i].Valoare = val21;
+                            break;
+                        case 21:
+                            dvm.ListaPrognozaPerZi[i].Valoare = val22;
+                            break;
+                        case 22:
+                            dvm.ListaPrognozaPerZi[i].Valoare = val23;
+                            break;
+                        case 23:
+                            dvm.ListaPrognozaPerZi[i].Valoare = val24;
+                            break;
+                        default:
+                            break;
+                    }
+                    _context.PrognozaEnergieModels.Update(dvm.ListaPrognozaPerZi[i]);
+                }
             }
+            _context.SaveChanges();
             dvm.ChartData = chartData;
             ViewBag.dataSource = chartData;
             return View(dvm);

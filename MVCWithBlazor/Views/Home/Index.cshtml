@@ -4,55 +4,63 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="row">
-    <form class="col-md-6" method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="Index">
-        <div class="form-group">
-            <div class="col-md-10">
-                <input id="startDate" name="startDate" type="date" class="form-control" value="@ViewBag.start" />
+<form method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="Index">
+    <div class="row">
+        @*<form class="col-md-6" method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="Index">*@
+        <div class="col-md-6">
+            <div class="form-group">
+                <div class="col-md-10">
+                    <input id="startDate" name="startDate" type="date" class="form-control" value="@ViewBag.start" />
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-10">
+                    <input name="submitBtn" type="submit" value="Show data" />
+                </div>
             </div>
         </div>
-        <div class="form-group">
-            <div class="col-md-10">
-                <input type="submit" value="Show data" />
-            </div>
-        </div>
-    </form>
-    <span class="validation-summary-errors">@ViewBag.Mesaj</span>
-</div>
+        @*  </form>*@
+        <span class="validation-summary-errors">@ViewBag.Mesaj</span>
+    </div>
 
-<div class="form-group col-sm-1">
-    <input asp-for="@Model.ListaPrognozaPerZi[0].Valoare" type="text" value=@Model.ListaPrognozaPerZi[0].Valoare.ToString() class="form-control" />
-</div>
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Ora</th>
-            @for (int i = 0; i < 24; i++)
-            {
-                <th class="text-black-100">
-                    @(i+1)
-                </th>
-            }
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td class="text-black-100">Prognoza energie [MWh]</td>
-            @for (int i = 0; i < Model.ListaPrognozaPerZi.Count; i++)
-            {
-                <td><input style="width: 50px" type="number" value="@Model.ListaPrognozaPerZi[i].Valoare" /></td>
-            }
-        </tr>
-        <tr>
-            <td class="text-black-100">Consum Realizat [MWh]</td>
-            @for (int i = 0; i < Model.ListaConsumPerZi.Count; i++)
-            {
-                <td>@(Model.ListaConsumPerZi[i].ValueEnergyPlusA / 1000)</td>
-            }
-        </tr>
-    </tbody>
-</table>
+    @*<div class="form-group col-sm-1">
+            <input asp-for="@Model.ListaPrognozaPerZi[0].Valoare" type="text" value=@Model.ListaPrognozaPerZi[0].Valoare.ToString() class="form-control" />
+        </div>*@
 
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Ora</th>
+                @for (int i = 0; i < 24; i++)
+                {
+                    <th class="text-black-100">
+                        @(i + 1)
+                    </th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="text-black-100">Prognoza energie [MWh]</td>
+                @for (int i = 0; i < Model.ListaPrognozaPerZi.Count; i++)
+                {
+                    <td>
+                        <input class="d-none" name="id@(i+1)" value="@Model.ListaPrognozaPerZi[i].PrognozaEnergieModelID" />
+                        <input name="val@(i+1)" style="width: 50px" type="number" step="0.1" value="@Model.ListaPrognozaPerZi[i].Valoare" />
+                    </td>
+                }
+                <td><input name="submitBtn" type="submit" value="Save data" /></td>
+            </tr>
+            <tr>
+                <td class="text-black-100">Consum Realizat [MWh]</td>
+                @for (int i = 0; i < Model.ListaConsumPerZi.Count; i++)
+                {
+                    <td>@(Model.ListaConsumPerZi[i].ValueEnergyPlusA / 1000)</td>
+                }
+            </tr>
+        </tbody>
+    </table>
+</form>
 <ejs-chart id="container" load="window.onChartLoad" title="Grafic - Prognoza / Consum">
     <e-chart-tooltipsettings enable="true">
     </e-chart-tooltipsettings>
@@ -83,13 +91,13 @@
     </e-series-collection>
 </ejs-chart>
 @*<ejs-chart id="container" title="Prognoza_Consum Realizat" width="100%">
-    <e-chart-primaryxaxis valueType="Category">
-    </e-chart-primaryxaxis>
-    <e-series-collection>
-        <e-series dataSource="ViewBag.dataSource" xName="x" yName="y" type="@Syncfusion.EJ2.Charts.ChartSeriesType.StepLine"></e-series>
-        <e-series dataSource="ViewBag.dataSource" xName="x" yName="y1" type="@Syncfusion.EJ2.Charts.ChartSeriesType.StepLine"></e-series>
-    </e-series-collection>
-</ejs-chart>*@
+        <e-chart-primaryxaxis valueType="Category">
+        </e-chart-primaryxaxis>
+        <e-series-collection>
+            <e-series dataSource="ViewBag.dataSource" xName="x" yName="y" type="@Syncfusion.EJ2.Charts.ChartSeriesType.StepLine"></e-series>
+            <e-series dataSource="ViewBag.dataSource" xName="x" yName="y1" type="@Syncfusion.EJ2.Charts.ChartSeriesType.StepLine"></e-series>
+        </e-series-collection>
+    </ejs-chart>*@
 
 <div class="text-center">
     <h1 class="display-4">Welcome to ASP.NET Core Identity Management </h1>
