@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -18,12 +19,14 @@ namespace MVCWithBlazor.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly ReportDbContext _context;
         private readonly ReportService _reportService;
+        private readonly IWebHostEnvironment _env;
 
-        public HomeController(ILogger<HomeController> logger, ReportDbContext context, ReportService reportService)
+        public HomeController(ILogger<HomeController> logger, ReportDbContext context, ReportService reportService, IWebHostEnvironment environment)
         {
             _logger = logger;
             _context = context;
             _reportService = reportService;
+            _env = environment;
         }
 
         [HttpGet]
@@ -158,6 +161,13 @@ namespace MVCWithBlazor.Controllers
             _context.SaveChanges();
             dvm.ChartData = chartData;
             ViewBag.dataSource = chartData;
+            // Save to Excel File
+            if (submitBtn == "Get File")
+            {
+                var filePath = _reportService.SaveExcelFileToDisk(dvm, _env, startDate).ToString();
+                byte[] fileBytes = System.IO.File.ReadAllBytes(filePath);
+                return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Prognoza zilnic.xlsx");
+            }
             return View(dvm);
         }
 

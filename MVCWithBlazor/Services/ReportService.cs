@@ -12,6 +12,8 @@ using MVCWithBlazor.Data;
 using Microsoft.AspNetCore.Mvc;
 using MVCWithBlazor.Controllers;
 using OfficeOpenXml.Style;
+using Microsoft.AspNetCore.Hosting;
+using OfficeOpenXml.Drawing.Chart;
 
 namespace MVCWithBlazor.Services
 {
@@ -514,6 +516,85 @@ namespace MVCWithBlazor.Services
 
             return controler.File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", excelName);
 
+        }
+
+        // Save to Excel File Daily Forecast
+        public FileInfo SaveExcelFileToDisk(DailyViewModel dvm, IWebHostEnvironment environment, DateTime data)
+        {
+            using (var pck = new ExcelPackage())
+            {
+                ExcelWorksheet ws = pck.Workbook.Worksheets.Add(data.ToString("dd.MM.yyyy"));
+                ws.Cells["B5:Z5"].Style.Font.Bold = true;
+
+                // Set Values from report in excel file
+                // Rand 1
+                ws.Cells["B5"].Style.Font.Bold = true;
+                ws.Cells["B5"].Value = "Ora";
+                for (int i = 0; i < 24; i++)
+                {
+                    ws.Cells[$"{GetCharStringsFromNumber(67 + i)}5"].Value = i + 1;
+                }
+
+                // Rand 2
+                ws.Cells["B6"].Style.Font.Bold = true;
+                ws.Cells["B6"].Value = "Prognoza energie [MWh]";
+                for (int i = 0; i < dvm.ListaPrognozaPerZi.Count; i++)
+                {
+                    ws.Cells[$"{GetCharStringsFromNumber(67 + i)}6"].Value = dvm.ListaPrognozaPerZi[i].Valoare;
+                }
+
+                // Rand 3
+                ws.Cells["B7"].Style.Font.Bold = true;
+                ws.Cells["B7"].Value = "Consum realizat [MWh]";
+                for (int i = 0; i < dvm.ListaConsumPerZi.Count; i++)
+                {
+                    ws.Cells[$"{GetCharStringsFromNumber(67 + i)}7"].Value = dvm.ListaConsumPerZi[i].ValueEnergyPlusA / 1000;
+                }
+
+                ws.Cells["A:AZ"].AutoFitColumns();
+
+                // Add chart
+                ExcelLineChart lineChart = ws.Drawings.AddChart("lineChart", eChartType.Line) as ExcelLineChart;
+
+                // Set Chart Title
+                lineChart.Title.Text = "Prognoza energie";
+
+                // Create Ranges for Chart
+                var rangeLabel = ws.Cells["C5:Z5"];
+                var range1 = ws.Cells["C6:Z6"];
+                var range2 = ws.Cells["C7:Z7"];
+
+                // Add ranges to the chart
+                lineChart.Series.Add(range1, rangeLabel);
+                lineChart.Series.Add(range2, rangeLabel);
+
+                // Set names of the legend
+                lineChart.Series[0].Header = ws.Cells["B6"].Value.ToString();
+                lineChart.Series[1].Header = ws.Cells["B7"].Value.ToString();
+
+                // Position of the legend
+                lineChart.Legend.Position = eLegendPosition.Right;
+
+                // Size of the chart
+                lineChart.SetSize(1200, 400);
+
+                // Add the chart at cell ..
+                lineChart.SetPosition(10, 0, 1, 0);
+                // Write File to Disk
+                string excelFileName = $"Prognoza energie zilnic.xlsx";
+                string wwwPath = environment.WebRootPath;
+
+                string filePath = Path.Combine(wwwPath, "Fisiere");
+                if (!Directory.Exists(filePath))
+                {
+                    Directory.CreateDirectory(filePath);
+                }
+
+                filePath = Path.Combine(filePath, excelFileName);
+                FileInfo fileInfo = new FileInfo(filePath);
+                pck.SaveAs(fileInfo);
+                return fileInfo;
+            }
         }
 
         public string GetCharStringsFromNumber(int nr)
