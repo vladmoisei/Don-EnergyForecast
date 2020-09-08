@@ -6,11 +6,12 @@
 
 <form method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="Index">
     <div class="row">
-        @*<form class="col-md-6" method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="Index">*@
         <div class="col-md-6">
             <div class="form-group">
                 <div class="col-md-10">
                     <input id="startDate" name="startDate" type="date" class="form-control" value="@ViewBag.start" />
+                    <input name="submitBtn" type="submit" value="Previous" />
+                    <input name="submitBtn" type="submit" value="Next" />
                 </div>
             </div>
             <div class="form-group">
@@ -22,10 +23,6 @@
         @*  </form>*@
         <span class="validation-summary-errors">@ViewBag.Mesaj</span>
     </div>
-
-    @*<div class="form-group col-sm-1">
-            <input asp-for="@Model.ListaPrognozaPerZi[0].Valoare" type="text" value=@Model.ListaPrognozaPerZi[0].Valoare.ToString() class="form-control" />
-        </div>*@
 
     <table class="table table-bordered">
         <thead>
@@ -62,6 +59,9 @@
                 <td>
                     <input name="submitBtn" type="submit" value="Get File" />
                 </td>
+                <td>
+                    <input name="submitBtn" type="submit" value="Send Mail" />
+                </td>
             </tr>
         </tbody>
     </table>
@@ -95,27 +95,3 @@
         </e-series>
     </e-series-collection>
 </ejs-chart>
-@*<ejs-chart id="container" title="Prognoza_Consum Realizat" width="100%">
-        <e-chart-primaryxaxis valueType="Category">
-        </e-chart-primaryxaxis>
-        <e-series-collection>
-            <e-series dataSource="ViewBag.dataSource" xName="x" yName="y" type="@Syncfusion.EJ2.Charts.ChartSeriesType.StepLine"></e-series>
-            <e-series dataSource="ViewBag.dataSource" xName="x" yName="y1" type="@Syncfusion.EJ2.Charts.ChartSeriesType.StepLine"></e-series>
-        </e-series-collection>
-    </ejs-chart>*@
-
-<div class="text-center">
-    <h1 class="display-4">Welcome to ASP.NET Core Identity Management </h1>
-    <div class="alert ">
-        <a class="btn btn-info" asp-action="member">Go to Member Area</a>
-    </div>
-
-    <div class="alert">
-        <a class="btn btn-info" asp-action="admin">Go to Admin Area</a>
-    </div>
-
-    <component type="typeof(ComponentProba)" render-mode="ServerPrerendered" />
-    <div>
-        <ejs-calendar id="calendar"></ejs-calendar>
-    </div>
-</div>

@@ -1,0 +1,50 @@
+﻿@model MVCWithBlazor.Models.MailModel
+
+@{
+    ViewData["Title"] = "MailService";
+}
+
+<h1>MailService</h1>
+
+<h4>MailModel</h4>
+<hr />
+<div class="row">
+    <div class="col-lg-10">
+        <form asp-action="MailService">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="FromAdress" class="control-label"></label>
+                <input asp-for="FromAdress" class="form-control" />
+                <span asp-validation-for="FromAdress" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ToAddress" class="control-label"></label>
+                <textarea rows="2" asp-for="ToAddress" class="form-control" ></textarea>
+                <span asp-validation-for="ToAddress" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Subjsect" class="control-label"></label>
+                <input asp-for="Subjsect" class="form-control" />
+                <span asp-validation-for="Subjsect" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Messaege" class="control-label"></label>
+                <textarea rows="4" asp-for="Messaege" class="form-control" ></textarea>
+                <span asp-validation-for="Messaege" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FilePathFisierDeTrimis" class="control-label"></label>
+                <input asp-for="FilePathFisierDeTrimis" class="form-control" />
+                <span asp-validation-for="FilePathFisierDeTrimis" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

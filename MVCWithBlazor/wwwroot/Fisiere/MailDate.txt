@@ -1,0 +1,1 @@
+{"FromAdress":"gigel@","ToAddress":"DAta","Subjsect":"Subiect proba","Messaege":"Mesaj proba","FilePathFisierDeTrimis":null}

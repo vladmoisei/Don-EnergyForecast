@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -20,13 +22,31 @@ namespace MVCWithBlazor.Controllers
         private readonly ReportDbContext _context;
         private readonly ReportService _reportService;
         private readonly IWebHostEnvironment _env;
+        private readonly IEmailSender _emailSender;
 
-        public HomeController(ILogger<HomeController> logger, ReportDbContext context, ReportService reportService, IWebHostEnvironment environment)
+        public HomeController(ILogger<HomeController> logger, ReportDbContext context, ReportService reportService, IWebHostEnvironment environment, IEmailSender emailSender)
         {
             _logger = logger;
             _context = context;
             _reportService = reportService;
             _env = environment;
+            _emailSender = emailSender;
+        }
+
+        public IActionResult MailService()
+        {
+            string filePath = Path.Combine(_env.WebRootPath, "Fisiere\\MailDate.JSON");
+            MailModel mailModel = _reportService.GetMailModelAsync(filePath).Result;
+            return View(mailModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult MailService([Bind("FromAdress,ToAddress,Subjsect,Messaege,FilePathFisierDeTrimis")] MailModel mailModel)
+        {
+            string filePath = _reportService.WriteToJsonMailData(mailModel, _env);
+            //MailModel mailModel1 = _reportService.GetMailModelAsync(filePath).Result;
+            return View(mailModel);
         }
 
         [HttpGet]
@@ -57,8 +77,18 @@ namespace MVCWithBlazor.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Index(DateTime startDate, string submitBtn, double val1, double val2, double val3, double val4, double val5, double val6, double val7, double val8, double val9, double val10, double val11, double val12, double val13, double val14, double val15, double val16, double val17, double val18, double val19, double val20, double val21, double val22, double val23, double val24)
         {
+            // Show Data For previous Day
+            if (submitBtn == "Previous")
+            {
+                startDate = startDate.AddDays(-1);
+            } 
+            else if (submitBtn == "Next") // Show Data For next Day
+            {
+                startDate = startDate.AddDays(1);
+            }
             ViewBag.start = startDate.ToString("yyyy-MM-dd");
             DailyViewModel dvm = new DailyViewModel
             {
@@ -158,9 +188,13 @@ namespace MVCWithBlazor.Controllers
                     _context.PrognozaEnergieModels.Update(dvm.ListaPrognozaPerZi[i]);
                 }
             }
+            // Save to Database
             _context.SaveChanges();
+
+            // Add ChartData
             dvm.ChartData = chartData;
             ViewBag.dataSource = chartData;
+
             // Save to Excel File
             if (submitBtn == "Get File")
             {
@@ -168,6 +202,16 @@ namespace MVCWithBlazor.Controllers
                 byte[] fileBytes = System.IO.File.ReadAllBytes(filePath);
                 return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Prognoza zilnic.xlsx");
             }
+
+            // Send Mail With File Per one day Forecast
+            if (submitBtn == "Send Mail")
+            {
+                var fisierDeTrimis = _reportService.SaveExcelFileToDisk(dvm, _env, startDate).ToString();
+                string filePathMailModel = Path.Combine(_env.WebRootPath, "Fisiere\\MailDate.JSON");
+                MailModel mailModel = _reportService.GetMailModelAsync(filePathMailModel).Result;
+                _emailSender.SendEmailAsync(mailModel.FromAdress, mailModel.ToAddress, mailModel.Subjsect, mailModel.Messaege, fisierDeTrimis);
+            }
+
             return View(dvm);
         }
 
