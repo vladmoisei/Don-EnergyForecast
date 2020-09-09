@@ -16,6 +16,7 @@ using MVCWithBlazor.Services;
 
 namespace MVCWithBlazor.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -85,7 +86,7 @@ namespace MVCWithBlazor.Controllers
             {
                 startDate = startDate.AddDays(-1);
             } 
-            else if (submitBtn == "Next") // Show Data For next Day
+            else if (submitBtn == "Next") // Show Data For next  Day
             {
                 startDate = startDate.AddDays(1);
             }
