@@ -112,6 +112,10 @@ namespace MVCWithBlazor.Controllers
                     {
                         return RedirectToAction("Member", "Home");
                     }
+                    if (await _userManager.IsInRoleAsync(user, "Admin"))
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }
                 }
                 else
                 {

@@ -97,7 +97,17 @@ namespace MVCWithBlazor.Services
 
                     for (int row = 3; row <= (rowCount + 1); row++)
                     {
-                        DateTime dateTime = ReturnareDataFromExcel(worksheet.Cells[row, 1].Value.ToString().Trim());
+                        DateTime dateTime;
+                        try
+                        {
+                            dateTime = ReturnareDataFromExcel(worksheet.Cells[row, 1].Value.ToString().Trim());
+                        }
+                        catch (NullReferenceException ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                            continue;
+                        }
+                        
                         if (list.LastOrDefault() != null && list.LastOrDefault().DataOra == dateTime)
                             continue;
                         if (IsFixHour(dateTime))
